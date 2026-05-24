@@ -23,7 +23,6 @@ public class NewMatchServlet extends BasicServlet {
 
     private NewMatchValidator validator;
     private OngoingMatchStorage ongoingMatchStorage;
-    private OngoingMatchesService ongoingMatchesService;
 
     @Override
     public void init() throws ServletException {
@@ -62,7 +61,7 @@ public class NewMatchServlet extends BasicServlet {
         }
 
         try (EntityManager em = emf.createEntityManager()) {
-            ongoingMatchesService = new OngoingMatchesService(em, ongoingMatchStorage);
+            OngoingMatchesService ongoingMatchesService = new OngoingMatchesService(em, ongoingMatchStorage);
             UUID matchId = ongoingMatchesService.createMatch(player1Id, player2Id);
 
             sendJson(resp, HttpServletResponse.SC_CREATED, Map.of(
