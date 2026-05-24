@@ -20,13 +20,13 @@ import java.util.UUID;
 
 @WebServlet(name = "NewMatchServlet", urlPatterns = {"/new-match"})
 public class NewMatchServlet extends BasicServlet {
-    private final ObjectMapper objectMapper = new ObjectMapper();
+
     private NewMatchValidator validator;
     private OngoingMatchStorage ongoingMatchStorage;
     private OngoingMatchesService ongoingMatchesService;
 
     @Override
-    public void init() {
+    public void init() throws ServletException {
         super.init();
         ServletContext context = getServletContext();
         ongoingMatchStorage = (OngoingMatchStorage) context.getAttribute("ongoingMatchStorage");
@@ -77,15 +77,6 @@ public class NewMatchServlet extends BasicServlet {
         }
     }
 
-    private void sendJson(HttpServletResponse resp, int status, Object body)
-            throws IOException {
-
-        resp.setStatus(status);
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF-8");
-
-        objectMapper.writeValue(resp.getWriter(), body);
-    }
 
     private Long getLong(JsonNode json, String fieldName) {
         if (json == null || !json.has(fieldName) || !json.get(fieldName).canConvertToLong()) {
