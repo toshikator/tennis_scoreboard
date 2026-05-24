@@ -7,6 +7,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import pro.bukhman.exception.ResourceNotFoundException;
+import pro.bukhman.exception.TooManyActiveMatchesException;
 import pro.bukhman.matchStorage.OngoingMatchStorage;
 import pro.bukhman.service.OngoingMatchesService;
 import pro.bukhman.validation.NewMatchValidator;
@@ -67,12 +69,23 @@ public class NewMatchServlet extends BasicServlet {
             sendJson(resp, HttpServletResponse.SC_CREATED, Map.of(
                     "matchId", matchId
             ));
+        } catch (ResourceNotFoundException e) {
+            sendJson(resp, HttpServletResponse.SC_NOT_FOUND, Map.of(
+                    "code", "PLAYER_NOT_FOUND",
+                    "message", e.getMessage()
+            ));
+
+        } catch (TooManyActiveMatchesException e) {
+            sendJson(resp, 429, Map.of(
+                    "code", "TOO_MANY_ACTIVE_MATCHES",
+                    "message", e.getMessage()
+            ));
+
         } catch (Exception e) {
             sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, Map.of(
                     "code", "INTERNAL_SERVER_ERROR",
                     "message", "An error occurred while processing the request"
             ));
-
         }
     }
 

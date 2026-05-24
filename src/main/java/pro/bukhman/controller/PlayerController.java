@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import pro.bukhman.exception.ResourceNotFoundException;
 import pro.bukhman.model.entity.Player;
 import pro.bukhman.service.PlayerService;
+import pro.bukhman.validation.NewPlayerValidator;
 
 import java.io.IOException;
 import java.util.Map;
@@ -58,8 +59,10 @@ public class PlayerController extends BasicServlet {
         logger.info("Received POST request to /player");
         String firstName = req.getParameter("FirstName");
         String lastName = req.getParameter("LastName");
+        NewPlayerValidator validator = new NewPlayerValidator();
         try (EntityManager em = emf.createEntityManager()) {
             PlayerService playerService = new PlayerService(em);
+            validator.validate(firstName, lastName);
             Player player = playerService.createPlayer(firstName, lastName);
 
             sendJson(resp, HttpServletResponse.SC_CREATED, Map.of(
