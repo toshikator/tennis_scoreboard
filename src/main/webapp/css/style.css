@@ -1,0 +1,313 @@
+/* Global basics */
+:root {
+    --bg: #0f172a; /* slate-900 */
+    --panel: #111827; /* gray-900 */
+    --panel-2: #0b1220; /* darker */
+    --text: #e5e7eb; /* gray-200 */
+    --muted: #9ca3af; /* gray-400 */
+    --accent: #22d3ee; /* cyan-400 */
+    --accent-2: #7c3aed; /* violet-600 */
+    --border: #1f2937; /* gray-800 */
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    /* Base background for pages without a specific image */
+    background: radial-gradient(1200px 600px at 10% 100%, var(--panel) 0%, var(--bg) 40%, #000 100%);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+    min-height: 100%;
+}
+
+/* Ensure body can always show full-viewport backgrounds */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.site-header {
+    background: linear-gradient(180deg, rgba(124, 58, 237, 0.12), rgba(34, 211, 238, 0.06));
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.site-header nav {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    padding: 14px 20px;
+}
+
+.site-header a {
+    color: var(--text);
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 10px;
+    transition: all .2s ease;
+    border: 1px solid transparent;
+}
+
+.site-header a:hover {
+    color: #fff;
+    border-color: rgba(124, 58, 237, 0.35);
+    background: linear-gradient(180deg, rgba(124, 58, 237, 0.18), rgba(34, 211, 238, 0.08));
+    box-shadow: 0 6px 24px rgba(124, 58, 237, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Page layout */
+main {
+    max-width: 1100px;
+    margin: 28px auto;
+    padding: 0 20px;
+    /* Grow to fill remaining space between header and footer */
+    flex: 1 0 auto;
+    min-height: 0;
+}
+
+/* Players block */
+.player-container {
+    background: linear-gradient(180deg, rgba(17, 24, 39, 0.9), rgba(11, 18, 32, 0.9));
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.player-container h2 {
+    margin: 0 0 14px 0;
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: #f3f4f6; /* gray-100 */
+}
+
+/* The UL rendered by player-list.jsp */
+.player-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+}
+
+.player-item {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.7), rgba(2, 6, 23, 0.8));
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+
+.player-item:hover {
+    transform: translateY(-2px);
+    border-color: rgba(34, 211, 238, 0.35);
+    box-shadow: 0 10px 28px rgba(34, 211, 238, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.player-name {
+    font-weight: 600;
+    color: #e6faff;
+    letter-spacing: 2px;
+}
+
+/* Simple form styling (used on index.jsp) */
+form input[type="text"] {
+    background: rgba(17, 24, 39, 0.6);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 12px;
+    border-radius: 10px;
+    margin-right: 8px;
+}
+
+form button {
+    background: linear-gradient(180deg, var(--accent), #14b8a6);
+    color: #062424;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    letter-spacing: 3px;
+}
+
+form button:hover {
+    filter: brightness(1.05);
+}
+
+
+/* Page-specific background images */
+/* Uses obvious name matching:
+   - index.jsp            -> startPage.png
+   - players.jsp          -> newPlayer.png
+   - new-match.jsp        -> new-match.png
+   - current-match.jsp    -> matchScores.png
+   - completed-matches.jsp-> completed-matches.png
+*/
+
+/* Common background presentation */
+body[class^="page-"] {
+    background-attachment: fixed;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+/* Mobile override: avoid iOS background-attachment issues */
+@media (max-width: 768px) {
+    body[class^="page-"] {
+        background-attachment: scroll;
+    }
+}
+
+/* Home */
+body.page-index {
+    /* Dark overlay + image */
+    background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.75)),
+    url('../images/startPage.png');
+}
+
+/* Players */
+body.page-players {
+    background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.75)),
+    url('../images/newPlayer.png');
+}
+
+/* New Match */
+body.page-new-match {
+    background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.75)),
+    url('../images/new-match.png');
+}
+
+/* Current Match */
+body.page-current-match {
+    background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.75)),
+    url('../images/matchScores.png');
+}
+
+/* Completed Matches */
+body.page-completed-matches {
+    background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.75)),
+    url('../images/completed-matches.png');
+}
+
+
+/* Page-specific backgrounds and index page layout moved from JSP inline styles */
+
+/* Make start page tiles visually identical to Players list items */
+body.page-index .player-item a {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+}
+
+/* Fill-the-screen layout: index page only */
+body.page-index main {
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* allow children to size correctly in flex context */
+}
+body.page-index .player-container {
+    display: flex;              /* stack heading + grid */
+    flex-direction: column;
+    flex: 1 1 auto;             /* grow to fill remaining vertical space */
+    min-height: 0;              /* prevent overflow issues in flex children */
+}
+body.page-index .player-container > .player-items {
+    flex: 1 1 auto;             /* grid takes the remaining space */
+    min-height: 0;
+}
+
+
+/* New Match form styling */
+.form-card {
+    max-width: 780px;
+    margin: 20px auto 40px;
+    padding: 24px;
+    background: linear-gradient(180deg, rgba(17, 24, 39, 0.85), rgba(11, 18, 32, 0.9));
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+.form-styled {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 22px;
+}
+
+@media (max-width: 640px) {
+    .form-grid { grid-template-columns: 1fr; }
+}
+
+.form-field label {
+    display: block;
+    margin: 0 0 8px 2px;
+    color: var(--muted);
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.form-field input[type="text"] {
+    width: 100%;
+    background: rgba(15, 23, 42, 0.65);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 12px 14px;
+    border-radius: 12px;
+    outline: none;
+    transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+
+.form-field input[type="text"]::placeholder {
+    color: #9aa4b2;
+}
+
+.form-field input[type="text"]:focus {
+    border-color: rgba(34, 211, 238, 0.55);
+    box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.15), 0 12px 28px rgba(124, 58, 237, 0.15);
+    background: rgba(15, 23, 42, 0.82);
+}
+
+.btn-primary {
+    align-self: start;
+    background: linear-gradient(180deg, var(--accent), #14b8a6);
+    color: #052222;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 800;
+    letter-spacing: 3px;
+    box-shadow: 0 10px 28px rgba(34, 211, 238, 0.18), inset 0 1px 0 rgba(255,255,255,0.25);
+    transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
+}
+
+.btn-primary:hover {
+    filter: brightness(1.06);
+    transform: translateY(-1px);
+    box-shadow: 0 16px 36px rgba(34, 211, 238, 0.24), inset 0 1px 0 rgba(255,255,255,0.35);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+    filter: brightness(0.98);
+}

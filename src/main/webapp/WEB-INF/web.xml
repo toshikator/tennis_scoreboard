@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0">
+    <display-name>TennisScoreboard</display-name>
+    <!--  Using @WebServlet annotations for servlet mapping; web.xml kept minimal.
+ -->
+    <listener>
+        <listener-class>pro.bukhman.config.AppInitializer</listener-class>
+    </listener>
+    <!--  Ensure the correct content type for .ico files (Tomcat 10+/Servlet 6 may not map it by default)
+ -->
+    <mime-mapping>
+        <extension>ico</extension>
+        <mime-type>image/x-icon</mime-type>
+    </mime-mapping>
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+</web-app>
