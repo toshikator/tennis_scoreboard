@@ -1,5 +1,6 @@
 package pro.bukhman.controller;
 
+import jakarta.persistence.EntityManager;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -30,12 +31,13 @@ public class NewMatchServlet extends BasicServlet {
         ServletContext context = getServletContext();
         ongoingMatchStorage = (OngoingMatchStorage) context.getAttribute("ongoingMatchStorage");
         validator = new NewMatchValidator();
-        ongoingMatchesService = new OngoingMatchesService(emf.createEntityManager(), ongoingMatchStorage);
+
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
+
         JsonNode json;
         try {
             json = objectMapper.readTree(req.getInputStream());
@@ -59,11 +61,20 @@ public class NewMatchServlet extends BasicServlet {
             return;
         }
 
-        UUID matchId = ongoingMatchesService.createMatch(player1Id, player2Id);
+        try (EntityManager em = emf.createEntityManager()) {
+            ongoingMatchesService = new OngoingMatchesService(em, ongoingMatchStorage);
+            UUID matchId = ongoingMatchesService.createMatch(player1Id, player2Id);
 
-        sendJson(resp, HttpServletResponse.SC_CREATED, Map.of(
-                "matchId", matchId
-        ));
+            sendJson(resp, HttpServletResponse.SC_CREATED, Map.of(
+                    "matchId", matchId
+            ));
+        } catch (Exception e) {
+            sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, Map.of(
+                    "code", "INTERNAL_SERVER_ERROR",
+                    "message", "An error occurred while processing the request"
+            ));
+
+        }
     }
 
     private void sendJson(HttpServletResponse resp, int status, Object body)

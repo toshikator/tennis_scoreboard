@@ -34,12 +34,6 @@ public class PlayerService extends BasicService {
             }
             logger.error("Failed to create player: firstName='{}', lastName='{}'", firstName, lastName, e);
             throw e;
-        } finally {
-            try {
-                em.close();
-            } catch (Exception closeEx) {
-                logger.warn("Error while closing EntityManager after failure", closeEx);
-            }
         }
     }
 }

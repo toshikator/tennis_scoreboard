@@ -5,6 +5,8 @@ import pro.bukhman.exception.MatchIsNotFinishedYetException;
 import pro.bukhman.model.entity.OngoingMatchSnapshot;
 import pro.bukhman.model.entity.Player;
 
+import java.time.LocalDateTime;
+
 public class OngoingMatch {
 
     private static final int GAMES_TO_WIN_SET = 6;
@@ -13,6 +15,7 @@ public class OngoingMatch {
     private static final int SETS_TO_WIN_MATCH = 2;
     private final Player player1;
     private final Player player2;
+    private final LocalDateTime startedAt = LocalDateTime.now();
     private int player1Points;
     private int player2Points;
     private int player1Sets;
@@ -28,6 +31,10 @@ public class OngoingMatch {
     public OngoingMatch(Player player1, Player player2) {
         this.player1 = player1;
         this.player2 = player2;
+    }
+
+    public LocalDateTime getStartedAt() {
+        return startedAt;
     }
 
     public synchronized OngoingMatchSnapshot getSnapshot() {

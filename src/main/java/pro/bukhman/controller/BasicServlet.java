@@ -1,6 +1,7 @@
 package pro.bukhman.controller;
 
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,7 +19,8 @@ public class BasicServlet extends HttpServlet {
         try {
             emf = (EntityManagerFactory) getServletContext().getAttribute(AppInitializer.ATTR_ENTITY_MANAGER_FACTORY);
             if (emf == null) {
-                logger.warn("EntityManagerFactory not found under key 'entityManagerFactory'. AppInitializer uses key '{}'", AppInitializer.ATTR_ENTITY_MANAGER_FACTORY);
+                logger.warn("EntityManagerFactory not found under key 'ATTR_ENTITY_MANAGER_FACTORY'. AppInitializer uses key '{}'", AppInitializer.ATTR_ENTITY_MANAGER_FACTORY);
+                throw new ServletException("EntityManagerFactory was not initialized");
             } else {
                 logger.info("EntityManagerFactory obtained from ServletContext");
             }

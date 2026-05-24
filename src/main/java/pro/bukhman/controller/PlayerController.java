@@ -21,18 +21,21 @@ public class PlayerController extends BasicServlet {
     public void init() {
         super.init();
         logger.info("Initializing PlayerController");
-        playerService = new PlayerService(emf.createEntityManager());
+
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doGet(req, resp);
+        logger.info("Received GET request to /player");
+
+        playerService = new PlayerService(emf.createEntityManager());
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
+        logger.info("Received POST request to /player");
         try {
+            playerService = new PlayerService(emf.createEntityManager());
             Player player = playerService.createPlayer(req.getParameter("FirstName"), req.getParameter("LastName"));
             resp.sendRedirect("/player");
         } catch (Exception e) {
