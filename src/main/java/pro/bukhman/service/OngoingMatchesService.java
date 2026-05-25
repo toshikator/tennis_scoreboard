@@ -9,11 +9,12 @@ import java.util.UUID;
 
 public class OngoingMatchesService extends BasicService {
 
-    private final PlayerService playerService = new PlayerService(em);
+    private final PlayerService playerService;
     private final OngoingMatchStorage ongoingMatchStorage;
 
     public OngoingMatchesService(EntityManager em, OngoingMatchStorage ongoingMatchStorage) {
         super(em);
+        this.playerService = new PlayerService(em);
         this.ongoingMatchStorage = ongoingMatchStorage;
     }
 

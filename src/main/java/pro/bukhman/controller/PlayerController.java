@@ -1,12 +1,15 @@
 package pro.bukhman.controller;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.exception.ConstraintViolationException;
+import pro.bukhman.exception.ResourceAlreadyExistsException;
 import pro.bukhman.exception.ResourceNotFoundException;
 import pro.bukhman.model.entity.Player;
 import pro.bukhman.service.PlayerService;
@@ -63,12 +66,39 @@ public class PlayerController extends BasicServlet {
         try (EntityManager em = emf.createEntityManager()) {
             PlayerService playerService = new PlayerService(em);
             validator.validate(firstName, lastName);
+            firstName = firstName.trim();
+            lastName = lastName.trim();
             Player player = playerService.createPlayer(firstName, lastName);
 
             sendJson(resp, HttpServletResponse.SC_CREATED, Map.of(
                     "message", "Player created",
                     "playerId", player.getId()
             ));
+
+
+        } catch (ResourceAlreadyExistsException raee) {
+            logger.error("Error while processing POST /player: firstName='{}', lastName='{}',cause='{}'", firstName, lastName, raee.getCause());
+            if (raee.getCause() instanceof ConstraintViolationException) {
+                sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of(
+                        "code", "DUPLICATE_PLAYER",
+                        "message", "Player with this first name and last name already exists",
+                        "firstName", firstName,
+                        "lastName", lastName
+                ));
+            }
+        } catch (IllegalArgumentException e) {
+            logger.error(
+                    "Error while processing POST /player: firstName='{}', lastName='{}'",
+                    firstName,
+                    lastName,
+                    e
+            );
+
+            sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of(
+                    "code", "Validation Issue",
+                    "message", e.getMessage()
+            ));
+
         } catch (Exception e) {
             logger.error(
                     "Error while processing POST /player: firstName='{}', lastName='{}'",

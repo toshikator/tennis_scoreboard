@@ -28,8 +28,17 @@ public abstract class BasicEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         BasicEntity that = (BasicEntity) o;
-        return Objects.equals(id, that.id);
+        if (id == null || that.id == null) {
+            return false;
+        }
+        return id.equals(that.id);
     }
+
 }
