@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.exception.ConstraintViolationException;
 import pro.bukhman.exception.ResourceAlreadyExistsException;
 import pro.bukhman.exception.ResourceNotFoundException;
+import pro.bukhman.model.dto.PlayerDto;
 import pro.bukhman.model.entity.Player;
 import pro.bukhman.service.PlayerService;
 import pro.bukhman.validation.NewPlayerValidator;
@@ -46,7 +47,7 @@ public class PlayerController extends BasicServlet {
 
         try (EntityManager em = emf.createEntityManager()) {
             PlayerService playerService = new PlayerService(em);
-            Player player = playerService.getPlayerById(id);
+            PlayerDto player = playerService.getPlayerDtoById(id);
             sendJson(resp, HttpServletResponse.SC_OK, player);
         } catch (ResourceNotFoundException ex) {
             sendJson(resp, HttpServletResponse.SC_NOT_FOUND, Map.of(
@@ -78,14 +79,14 @@ public class PlayerController extends BasicServlet {
 
         } catch (ResourceAlreadyExistsException raee) {
             logger.error("Error while processing POST /player: firstName='{}', lastName='{}',cause='{}'", firstName, lastName, raee.getCause());
-            if (raee.getCause() instanceof ConstraintViolationException) {
-                sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of(
-                        "code", "DUPLICATE_PLAYER",
-                        "message", "Player with this first name and last name already exists",
-                        "firstName", firstName,
-                        "lastName", lastName
-                ));
-            }
+
+            sendJson(resp, HttpServletResponse.SC_CONFLICT, Map.of(
+                    "code", "DUPLICATE_PLAYER",
+                    "message", "Player with this first name and last name already exists",
+                    "firstName", firstName,
+                    "lastName", lastName
+            ));
+
         } catch (IllegalArgumentException e) {
             logger.error(
                     "Error while processing POST /player: firstName='{}', lastName='{}'",

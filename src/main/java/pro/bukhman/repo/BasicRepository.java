@@ -31,6 +31,13 @@ public class BasicRepository<T, ID> {
                 .getResultList();
     }
 
+    public List<T> findAllBy(String attribute, Object value) {
+        String jpql = "select e from " + entityClass.getSimpleName() + " e where e." + attribute + " = :value";
+        return em.createQuery(jpql, entityClass)
+                .setParameter("value", value)
+                .getResultList();
+    }
+
     public List<T> findPage(int page, int size) {
         String jpql = "select e from " + entityClass.getSimpleName() + " e";
 
@@ -40,7 +47,7 @@ public class BasicRepository<T, ID> {
                 .getResultList();
     }
 
-    public long count() {
+    public long countAll() {
         String jpql = "select count(e) from " + entityClass.getSimpleName() + " e";
         return em.createQuery(jpql, Long.class)
                 .getSingleResult();
