@@ -6,10 +6,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import pro.bukhman.exception.ResourceNotFoundException;
 import pro.bukhman.exception.TooManyActiveMatchesException;
 import pro.bukhman.matchStorage.OngoingMatchStorage;
+import pro.bukhman.service.MatchesService;
 import pro.bukhman.service.OngoingMatchesService;
 import pro.bukhman.validation.NewMatchValidator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @WebServlet(name = "NewMatchServlet", urlPatterns = {"/new-match"})
-public class NewMatchServlet extends BasicServlet {
+public class MatchController extends BasicServlet {
 
     private NewMatchValidator validator;
     private OngoingMatchStorage ongoingMatchStorage;
@@ -33,6 +33,31 @@ public class NewMatchServlet extends BasicServlet {
         ongoingMatchStorage = (OngoingMatchStorage) context.getAttribute("ongoingMatchStorage");
         validator = new NewMatchValidator();
 
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        JsonNode json;
+        try {
+            json = objectMapper.readTree(req.getInputStream());
+        } catch (JsonProcessingException e) {
+            sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of(
+                    "code", "INVALID_JSON",
+                    "message", "Request body must be valid JSON"
+            ));
+            return;
+        }
+        Long matchId = getLong(json, "matchId");
+        if (matchId == null) {
+            sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of(
+                    "code", "INVALID_JSON",
+                    "message", "Request body must contain a valid matchId"
+            ));
+        }
+        try (EntityManager em = emf.createEntityManager()) {
+            MatchesService matchesService = new MatchesService(em);
+
+        }
     }
 
     @Override

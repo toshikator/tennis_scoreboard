@@ -31,4 +31,5 @@ public class PlayerRepository extends BasicRepository<Player, Long> {
                 .getResultList();
 
     }
+
 }

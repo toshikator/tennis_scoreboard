@@ -1,4 +1,4 @@
 package pro.bukhman.model.dto;
 
-public record MatchDto(String player1, String player2, String winner, Long id) {
+public record MatchDto(Long player1, Long player2, Long winner, Long id) {
 }

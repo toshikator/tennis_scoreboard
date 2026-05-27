@@ -3,7 +3,7 @@
     <persistence-unit name="tennisScoreboardPersistenceUnit" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <class>pro.bukhman.model.entity.Player</class>
-        <class>pro.bukhman.model.entity.FinishedMatch</class>
+        <class>pro.bukhman.model.entity.Match</class>
 
 
         <exclude-unlisted-classes>false</exclude-unlisted-classes>

@@ -3,7 +3,7 @@ package pro.bukhman;
 import jakarta.persistence.EntityManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import pro.bukhman.model.entity.FinishedMatch;
+import pro.bukhman.model.entity.Match;
 import pro.bukhman.model.entity.Player;
 import pro.bukhman.util.HibernateUtil;
 
@@ -38,7 +38,7 @@ public class MatchesAdd {
                 if (!player1.getLastName().equals("Federer") || !player2.getLastName().equals("Sampras")) {
                     throw new IllegalStateException("Players should be Roger Federer and Pete Sampras");
                 }
-                var match2 = new FinishedMatch(player1, player2, player1);
+                var match2 = new Match(player1, player2, player1);
                 match2.setPlayedAt(LocalDate.of(2001, 7, 2));
                 em.persist(match2);
 
@@ -48,7 +48,7 @@ public class MatchesAdd {
                 if (!player1.getLastName().equals("Federer") || !player2.getLastName().equals("Agassi")) {
                     throw new IllegalStateException("Players should be Roger Federer and Andre Agassi");
                 }
-                var match3 = new FinishedMatch(player1, player2, player1);
+                var match3 = new Match(player1, player2, player1);
                 match3.setPlayedAt(LocalDate.of(2001, 7, 2));
                 em.persist(match3);
 
@@ -58,7 +58,7 @@ public class MatchesAdd {
                 if (!player1.getLastName().equals("Nadal") || !player2.getLastName().equals("Agassi")) {
                     throw new IllegalStateException("Players should be Rafael Nadal and Andre Agassi");
                 }
-                var match4 = new FinishedMatch(player1, player2, player1);
+                var match4 = new Match(player1, player2, player1);
                 match4.setPlayedAt(LocalDate.of(2006, 7, 1));
                 em.persist(match4);
 
@@ -68,7 +68,7 @@ public class MatchesAdd {
                 if (!player1.getLastName().equals("Laver") || !player2.getLastName().equals("Borg")) {
                     throw new IllegalStateException("Players should be Rod Laver and Bjorn Borg");
                 }
-                var match5 = new FinishedMatch(player1, player2, player2);
+                var match5 = new Match(player1, player2, player2);
                 match5.setPlayedAt(LocalDate.of(1976, 10, 11));
                 em.persist(match5);
 
@@ -78,7 +78,7 @@ public class MatchesAdd {
                 if (!player1.getLastName().equals("Sampras") || !player2.getLastName().equals("Agassi")) {
                     throw new IllegalStateException("Players should be Pete Sampras and Andre Agassi");
                 }
-                var match6 = new FinishedMatch(player1, player2, player1);
+                var match6 = new Match(player1, player2, player1);
                 match6.setPlayedAt(LocalDate.of(2002, 9, 8));
                 em.persist(match6);
 
@@ -88,7 +88,7 @@ public class MatchesAdd {
                 if (!player1.getLastName().equals("Graf") || !player2.getLastName().equals("Navratilova")) {
                     throw new IllegalStateException("Players should be Steffi Graf and Martina Navratilova");
                 }
-                var match7 = new FinishedMatch(player1, player2, player1);
+                var match7 = new Match(player1, player2, player1);
                 match7.setPlayedAt(LocalDate.of(1988, 7, 2));
                 em.persist(match7);
 
@@ -98,7 +98,7 @@ public class MatchesAdd {
                 if (!player1.getLastName().equals("Graf") || !player2.getLastName().equals("Evert")) {
                     throw new IllegalStateException("Players should be Steffi Graf and Chris Evert");
                 }
-                var match8 = new FinishedMatch(player1, player2, player1);
+                var match8 = new Match(player1, player2, player1);
                 match8.setPlayedAt(LocalDate.of(1988, 1, 24));
                 em.persist(match8);
 
@@ -108,7 +108,7 @@ public class MatchesAdd {
                 if (!player1.getLastName().equals("Navratilova") || !player2.getLastName().equals("Evert")) {
                     throw new IllegalStateException("Players should be Martina Navratilova and Chris Evert");
                 }
-                var match9 = new FinishedMatch(player1, player2, player2);
+                var match9 = new Match(player1, player2, player2);
                 match9.setPlayedAt(LocalDate.of(1985, 6, 8));
                 em.persist(match9);
 
@@ -118,7 +118,7 @@ public class MatchesAdd {
                 if (!player1.getLastName().equals("Court") || !player2.getLastName().equals("King")) {
                     throw new IllegalStateException("Players should be Margaret Court and Billie Jean King");
                 }
-                var match10 = new FinishedMatch(player1, player2, player1);
+                var match10 = new Match(player1, player2, player1);
                 match10.setPlayedAt(LocalDate.of(1963, 7, 8));
                 em.persist(match10);
 
@@ -128,7 +128,7 @@ public class MatchesAdd {
                 if (!player1.getLastName().equals("Court") || !player2.getLastName().equals("Evert")) {
                     throw new IllegalStateException("Players should be Margaret Court and Chris Evert");
                 }
-                var match11 = new FinishedMatch(player1, player2, player2);
+                var match11 = new Match(player1, player2, player2);
                 match11.setPlayedAt(LocalDate.of(1973, 7, 5));
                 em.persist(match11);
 
@@ -138,7 +138,7 @@ public class MatchesAdd {
                 if (!player1.getLastName().equals("Court") || !player2.getLastName().equals("Navratilova")) {
                     throw new IllegalStateException("Players should be Margaret Court and Martina Navratilova");
                 }
-                var match12 = new FinishedMatch(player1, player2, player2);
+                var match12 = new Match(player1, player2, player2);
                 match12.setPlayedAt(LocalDate.of(1977, 2, 14));
                 em.persist(match12);
 
@@ -148,7 +148,7 @@ public class MatchesAdd {
                 if (!player1.getLastName().equals("King") || !player2.getLastName().equals("Evert")) {
                     throw new IllegalStateException("Players should be Billie Jean King and Chris Evert");
                 }
-                var match13 = new FinishedMatch(player1, player2, player1);
+                var match13 = new Match(player1, player2, player1);
                 match13.setPlayedAt(LocalDate.of(1973, 7, 7));
                 em.persist(match13);
 
@@ -158,7 +158,7 @@ public class MatchesAdd {
                 if (!player1.getLastName().equals("King") || !player2.getLastName().equals("Navratilova")) {
                     throw new IllegalStateException("Players should be Billie Jean King and Martina Navratilova");
                 }
-                var match14 = new FinishedMatch(player1, player2, player2);
+                var match14 = new Match(player1, player2, player2);
                 match14.setPlayedAt(LocalDate.of(1980, 6, 30));
                 em.persist(match14);
 

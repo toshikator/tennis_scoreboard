@@ -47,10 +47,9 @@ public class PlayersController extends BasicServlet {
             }
         } else if (req.getParameter("firstName") != null && req.getParameter("lastName") == null) {
             String firstName = req.getParameter("firstName");
-//            String lastName = req.getParameter("lastName");
+            logger.info("Received GET request to /players with firstName and lastName parameters: firstName={}", firstName);
             try (EntityManager em = emf.createEntityManager()) {
                 PlayerService playerService = new PlayerService(em);
-                logger.info("Received GET request to /players with firstName and lastName parameters: firstName={}", firstName);
                 List<PlayerDto> players = playerService.getPlayersByFirstname(firstName);
                 sendJson(resp, HttpServletResponse.SC_OK, players);
             } catch (Exception e) {
@@ -60,7 +59,7 @@ public class PlayersController extends BasicServlet {
             }
 
         } else if (req.getParameter("firstName") == null && req.getParameter("lastName") != null) {
-//            String firstName = req.getParameter("firstName");
+
             String lastName = req.getParameter("lastName");
             try (EntityManager em = emf.createEntityManager()) {
                 PlayerService playerService = new PlayerService(em);

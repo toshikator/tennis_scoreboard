@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "matches")
-public class FinishedMatch extends BasicEntity {
+public class Match extends BasicEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "player1_id", nullable = false,
@@ -29,16 +29,16 @@ public class FinishedMatch extends BasicEntity {
     @Column(name = "played_at", nullable = false, updatable = false)
     private LocalDate playedAt;
 
-    public FinishedMatch() {
+    public Match() {
     }
 
-    public FinishedMatch(Player player1, Player player2, Player winner) {
+    public Match(Player player1, Player player2, Player winner) {
         this.player1 = player1;
         this.player2 = player2;
         this.winner = winner;
     }
 
-    public FinishedMatch(OngoingMatch ongoingMatch) {
+    public Match(OngoingMatch ongoingMatch) {
         player1 = ongoingMatch.getPlayer1();
         player2 = ongoingMatch.getPlayer2();
         winner = ongoingMatch.getWinner();
