@@ -38,11 +38,11 @@ public class Match extends BasicEntity {
         this.winner = winner;
     }
 
-    public Match(OngoingMatch ongoingMatch) {
-        player1 = ongoingMatch.getPlayer1();
-        player2 = ongoingMatch.getPlayer2();
-        winner = ongoingMatch.getWinner();
-    }
+//    public Match(OngoingMatch ongoingMatch) {
+//        player1 = ongoingMatch.getPlayer1();
+//        player2 = ongoingMatch.getPlayer2();
+//        winner = ongoingMatch.getWinner();
+//    }
 
 
     public Player getPlayer1() {

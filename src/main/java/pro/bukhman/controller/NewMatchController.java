@@ -11,6 +11,7 @@ import pro.bukhman.exception.TooManyActiveMatchesException;
 import pro.bukhman.matchStorage.OngoingMatchStorage;
 import pro.bukhman.service.MatchesService;
 import pro.bukhman.service.OngoingMatchesService;
+import pro.bukhman.service.PlayerService;
 import pro.bukhman.validation.NewMatchValidator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -21,10 +22,11 @@ import java.util.Map;
 import java.util.UUID;
 
 @WebServlet(name = "NewMatchServlet", urlPatterns = {"/new-match"})
-public class MatchController extends BasicServlet {
+public class NewMatchController extends BasicServlet {
 
     private NewMatchValidator validator;
     private OngoingMatchStorage ongoingMatchStorage;
+    private PlayerService playerService;
 
     @Override
     public void init() throws ServletException {
@@ -35,30 +37,30 @@ public class MatchController extends BasicServlet {
 
     }
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        JsonNode json;
-        try {
-            json = objectMapper.readTree(req.getInputStream());
-        } catch (JsonProcessingException e) {
-            sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of(
-                    "code", "INVALID_JSON",
-                    "message", "Request body must be valid JSON"
-            ));
-            return;
-        }
-        Long matchId = getLong(json, "matchId");
-        if (matchId == null) {
-            sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of(
-                    "code", "INVALID_JSON",
-                    "message", "Request body must contain a valid matchId"
-            ));
-        }
-        try (EntityManager em = emf.createEntityManager()) {
-            MatchesService matchesService = new MatchesService(em);
-
-        }
-    }
+//    @Override
+//    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+//        JsonNode json;
+//        try {
+//            json = objectMapper.readTree(req.getInputStream());
+//        } catch (JsonProcessingException e) {
+//            sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of(
+//                    "code", "INVALID_JSON",
+//                    "message", "Request body must be valid JSON"
+//            ));
+//            return;
+//        }
+//        Long matchId = getLong(json, "matchId");
+//        if (matchId == null) {
+//            sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of(
+//                    "code", "INVALID_JSON",
+//                    "message", "Request body must contain a valid matchId"
+//            ));
+//        }
+//        try (EntityManager em = emf.createEntityManager()) {
+//            MatchesService matchesService = new MatchesService(em);
+//
+//        }
+//    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -89,6 +91,9 @@ public class MatchController extends BasicServlet {
 
         try (EntityManager em = emf.createEntityManager()) {
             OngoingMatchesService ongoingMatchesService = new OngoingMatchesService(em, ongoingMatchStorage);
+            playerService = new PlayerService(em);
+            playerService.getPlayerById(player1Id);
+            playerService.getPlayerById(player2Id);
             UUID matchId = ongoingMatchesService.createMatch(player1Id, player2Id);
 
             sendJson(resp, HttpServletResponse.SC_CREATED, Map.of(

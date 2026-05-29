@@ -1,12 +1,14 @@
 package pro.bukhman.model.entity;
 
+import pro.bukhman.model.dto.PlayerDto;
+
 public class OngoingMatchSnapshot {
     private int GAMES_TO_WIN_SET;
     private int DEFAULT_POINTS_TO_WIN_GAME;
     private int DEFAULT_GAMES_TO_WIN_SET_DIFFERENCE;
     private int SETS_TO_WIN_MATCH;
-    private Player player1;
-    private Player player2;
+    private PlayerDto player1;
+    private PlayerDto player2;
     private int player1Points;
     private int player2Points;
     private int player1Sets;
@@ -15,7 +17,7 @@ public class OngoingMatchSnapshot {
     private int player2Games;
     private boolean tieBreak;
     private boolean isFinished;
-    private Player winner;
+    private PlayerDto winner;
     private int pointsToWinGame;
     private int gamesToWinSetDifference;
 
@@ -38,12 +40,14 @@ public class OngoingMatchSnapshot {
         this.pointsToWinGame = pointsToWinGame;
     }
 
-    public Player getWinner() {
+    public PlayerDto getWinner() {
         return winner;
     }
 
-    public void setWinner(Player winner) {
-        this.winner = winner;
+    public void setWinner(PlayerDto winner) {
+        if (winner != null) {
+            this.winner = new PlayerDto(winner.id(), winner.firstName(), winner.lastName());
+        }
     }
 
     public boolean isFinished() {
@@ -110,20 +114,20 @@ public class OngoingMatchSnapshot {
         this.player1Points = player1Points;
     }
 
-    public Player getPlayer2() {
+    public PlayerDto getPlayer2() {
         return player2;
     }
 
-    public void setPlayer2(Player player2) {
-        this.player2 = player2;
+    public void setPlayer2(PlayerDto player2) {
+        this.player2 = new PlayerDto(player2.id(), player2.firstName(), player2.lastName());
     }
 
-    public Player getPlayer1() {
+    public PlayerDto getPlayer1() {
         return player1;
     }
 
-    public void setPlayer1(Player player1) {
-        this.player1 = player1;
+    public void setPlayer1(PlayerDto player1) {
+        this.player1 = new PlayerDto(player1.id(), player1.firstName(), player1.lastName());
     }
 
     public int getSETS_TO_WIN_MATCH() {

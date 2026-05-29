@@ -1,25 +1,52 @@
 package pro.bukhman.model;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pro.bukhman.exception.MatchIsAlreadyFinishedException;
 import pro.bukhman.exception.MatchIsNotFinishedYetException;
+import pro.bukhman.model.dto.PlayerDto;
 import pro.bukhman.model.entity.OngoingMatchSnapshot;
 import pro.bukhman.model.entity.Player;
+import pro.bukhman.service.PlayerService;
+import pro.bukhman.util.HibernateUtil;
+import pro.bukhman.util.PropertiesReader;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class OngoingMatchTest {
     static OngoingMatch ongoingMatch;
+    static PlayerService playerService;
+    static EntityManager em;
     OngoingMatchSnapshot ongoingMatchSnapshot;
+
+
+    @BeforeAll
+    static void setUp() {
+        Player player1 = new Player();
+        player1.setId(1L);
+        player1.setFirstName("Sergey");
+        player1.setLastName("Zhukov");
+        Player player2 = new Player();
+        player2.setId(2L);
+        player2.setFirstName("Conan");
+        player2.setLastName("Barbarian");
+        PlayerDto pl1Dto = new PlayerDto(player1.getId(), player1.getFirstName(), player1.getLastName());
+        PlayerDto pl2Dto = new PlayerDto(player2.getId(), player2.getFirstName(), player2.getLastName());
+        ongoingMatch = new OngoingMatch(pl1Dto, pl2Dto);
+    }
 
     @Test
     void getSnapshot() {
-        assertEquals("Sergey", ongoingMatchSnapshot.getPlayer1().getFirstName());
-        assertEquals("Conan", ongoingMatchSnapshot.getPlayer2().getFirstName());
-        assertEquals("Zhukov", ongoingMatchSnapshot.getPlayer1().getLastName());
-        assertEquals("Barbarian", ongoingMatchSnapshot.getPlayer2().getLastName());
+        assertEquals("Sergey", ongoingMatchSnapshot.getPlayer1().firstName());
+        assertEquals("Conan", ongoingMatchSnapshot.getPlayer2().firstName());
+        assertEquals("Zhukov", ongoingMatchSnapshot.getPlayer1().lastName());
+        assertEquals("Barbarian", ongoingMatchSnapshot.getPlayer2().lastName());
     }
 
     @Test
@@ -29,7 +56,7 @@ class OngoingMatchTest {
         assertEquals(1, ongoingMatchSnapshot.getPlayer1Points());
     }
 
-    void addPointToPlayer(Player player) {
+    void addPointToPlayer(PlayerDto player) {
         ongoingMatch.addPoint(player);
     }
 
@@ -48,20 +75,7 @@ class OngoingMatchTest {
         assertEquals(1, ongoingMatchSnapshot.getPlayer1Games());
     }
 
-    @BeforeAll
-    static void setUp() {
-        Player player1 = new Player();
-        player1.setId(1L);
-        player1.setFirstName("Sergey");
-        player1.setLastName("Zhukov");
-        Player player2 = new Player();
-        player2.setId(2L);
-        player2.setFirstName("Conan");
-        player2.setLastName("Barbarian");
-        ongoingMatch = new OngoingMatch(player1, player2);
-    }
-
-    void addGameToPlayer(Player player) {
+    void addGameToPlayer(PlayerDto player) {
         for (int i = 0; i < 4; i++) {
             addPointToPlayer(player);
         }
@@ -91,7 +105,7 @@ class OngoingMatchTest {
 
     }
 
-    void addSetToPlayer(Player player) {
+    void addSetToPlayer(PlayerDto player) {
         for (int i = 0; i < 6; i++) {
             addGameToPlayer(player);
         }

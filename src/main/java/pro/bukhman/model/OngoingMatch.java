@@ -2,6 +2,7 @@ package pro.bukhman.model;
 
 import pro.bukhman.exception.MatchIsAlreadyFinishedException;
 import pro.bukhman.exception.MatchIsNotFinishedYetException;
+import pro.bukhman.model.dto.PlayerDto;
 import pro.bukhman.model.entity.OngoingMatchSnapshot;
 import pro.bukhman.model.entity.Player;
 
@@ -13,8 +14,8 @@ public class OngoingMatch {
     private static final int DEFAULT_POINTS_TO_WIN_GAME = 4;
     private static final int DEFAULT_GAMES_TO_WIN_SET_DIFFERENCE = 2;
     private static final int SETS_TO_WIN_MATCH = 2;
-    private final Player player1;
-    private final Player player2;
+    private final PlayerDto player1;
+    private final PlayerDto player2;
     private final LocalDateTime startedAt = LocalDateTime.now();
     private int player1Points;
     private int player2Points;
@@ -24,11 +25,11 @@ public class OngoingMatch {
     private int player2Games;
     private boolean tieBreak;
     private boolean isFinished;
-    private Player winner;
+    private PlayerDto winner;
     private int pointsToWinGame = DEFAULT_POINTS_TO_WIN_GAME;
     private int gamesToWinSetDifference = DEFAULT_GAMES_TO_WIN_SET_DIFFERENCE;
 
-    public OngoingMatch(Player player1, Player player2) {
+    public OngoingMatch(PlayerDto player1, PlayerDto player2) {
         this.player1 = player1;
         this.player2 = player2;
     }
@@ -59,7 +60,7 @@ public class OngoingMatch {
         return ongoingMatchSnapshot;
     }
 
-    protected synchronized void addPoint(Player player) {
+    protected synchronized void addPoint(PlayerDto player) {
         if (isFinished) {
             throw new MatchIsAlreadyFinishedException("Match is already finished");
         }
@@ -81,7 +82,7 @@ public class OngoingMatch {
         }
     }
 
-    private void addGame(Player player) {
+    private void addGame(PlayerDto player) {
         if (isFinished) {
             throw new MatchIsAlreadyFinishedException("MatchIsAlreadyFinishedException: it's finished");
         }
@@ -113,7 +114,7 @@ public class OngoingMatch {
         player2Points = 0;
     }
 
-    private void addSet(Player player) {
+    private void addSet(PlayerDto player) {
         if (isFinished) {
             throw new MatchIsAlreadyFinishedException("MatchIsAlreadyFinishedException: it's finished");
         }
@@ -144,21 +145,21 @@ public class OngoingMatch {
         gamesToWinSetDifference = DEFAULT_GAMES_TO_WIN_SET_DIFFERENCE;
     }
 
-    public synchronized Player getPlayer1() {
+    public synchronized PlayerDto getPlayer1() {
         if (!isFinished) {
             throw new MatchIsNotFinishedYetException("Match is not finished yet");
         }
         return player1;
     }
 
-    public synchronized Player getPlayer2() {
+    public synchronized PlayerDto getPlayer2() {
         if (!isFinished) {
             throw new MatchIsNotFinishedYetException("Match is not finished yet");
         }
         return player2;
     }
 
-    public synchronized Player getWinner() {
+    public synchronized PlayerDto getWinner() {
         if (!isFinished) {
             throw new MatchIsNotFinishedYetException("Match is not finished yet");
         }

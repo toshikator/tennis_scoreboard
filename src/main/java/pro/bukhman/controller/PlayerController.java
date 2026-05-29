@@ -47,8 +47,8 @@ public class PlayerController extends BasicServlet {
 
         try (EntityManager em = emf.createEntityManager()) {
             PlayerService playerService = new PlayerService(em);
-            PlayerDto player = playerService.getPlayerDtoById(id);
-            sendJson(resp, HttpServletResponse.SC_OK, player);
+            PlayerDto playerDto = playerService.getPlayerDtoById(id);
+            sendJson(resp, HttpServletResponse.SC_OK, playerDto);
         } catch (ResourceNotFoundException ex) {
             sendJson(resp, HttpServletResponse.SC_NOT_FOUND, Map.of(
                     "code", "PLAYER_NOT_FOUND",

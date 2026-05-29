@@ -2,6 +2,9 @@ package pro.bukhman.matchStorage;
 
 import pro.bukhman.exception.TooManyActiveMatchesException;
 import pro.bukhman.model.OngoingMatch;
+import pro.bukhman.model.dto.OngoingMatchDto;
+import pro.bukhman.model.dto.PlayerDto;
+import pro.bukhman.model.entity.OngoingMatchSnapshot;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -30,6 +33,17 @@ public class OngoingMatchStorage {
 
     public Optional<OngoingMatch> findById(UUID id) {
         return Optional.ofNullable(ongoingMatches.get(id));
+    }
+
+    public OngoingMatchDto getDtoByUUID(UUID id) {
+        OngoingMatch ongoingMatch = findById(id).orElseThrow(() -> new IllegalArgumentException("Match not found"));
+        OngoingMatchSnapshot s = ongoingMatch.getSnapshot();
+        PlayerDto p1 = s.getPlayer1();
+        PlayerDto p2 = s.getPlayer2();
+        OngoingMatchDto dto = new OngoingMatchDto(id, p1.id(), p2.id(), p1.firstName(), p2.firstName(), p1.lastName(),
+                p2.lastName(), s.getPlayer1Points(), s.getPlayer2Points(), s.getPlayer1Sets(), s.getPlayer2Sets(),
+                s.getPlayer1Games(), s.getPlayer2Games());
+        return dto;
     }
 
     public void remove(UUID id) {
