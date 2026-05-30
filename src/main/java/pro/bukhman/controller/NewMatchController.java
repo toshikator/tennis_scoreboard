@@ -19,6 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -39,84 +40,31 @@ public class NewMatchController extends BasicServlet {
         logger.info("NewMatchController initialized. OngoingMatchStorage present={} ", ongoingMatchStorage != null);
     }
 
-//    @Override
-//    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-//        JsonNode json;
-//        try {
-//            json = objectMapper.readTree(req.getInputStream());
-//        } catch (JsonProcessingException e) {
-//            sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of(
-//                    "code", "INVALID_JSON",
-//                    "message", "Request body must be valid JSON"
-//            ));
-//            return;
-//        }
-//        Long matchId = getLong(json, "matchId");
-//        if (matchId == null) {
-//            sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of(
-//                    "code", "INVALID_JSON",
-//                    "message", "Request body must contain a valid matchId"
-//            ));
-//        }
-//        try (EntityManager em = emf.createEntityManager()) {
-//            MatchesService matchesService = new MatchesService(em);
-//
-//        }
-//    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
         logger.info("Received POST /new-match from ip={} contentType={}", req.getRemoteAddr(), req.getContentType());
+        logger.info("req-player1Id={}, req-player2Id={}", req.getParameter("player1Id"), req.getParameter("player2Id"));
 
-        sendJson(resp, HttpServletResponse.SC_METHOD_NOT_ALLOWED, Map.of(
-                "json-player1Id", req.getParameter("player1Id"),
-                "json-player2Id", req.getParameter("player2Id")
-        ));
-
-        JsonNode json;
-        try {
-            json = objectMapper.readTree(req.getInputStream());
-            if (logger.isDebugEnabled()) {
-                logger.debug("Incoming JSON body parsed successfully");
-            }
-        } catch (JsonProcessingException e) {
-            logger.warn("Invalid JSON in POST /new-match: error={}", e.getOriginalMessage());
-            sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of(
-                    "code", "INVALID_JSON",
-                    "message", "Request body must be valid JSON",
-                    "details", e.getOriginalMessage()
-
-            ));
-            return;
-        }
 
         Long player1Id;
         Long player2Id;
         Map<String, String> errors;
         try {
-            player1Id = getLong(json, "player1Id");
-            player2Id = getLong(json, "player2Id");
-            errors = validator.validate(player1Id, player2Id);
+            errors = validator.validate(req.getParameter("player1Id"), req.getParameter("player2Id"));
+            if (!errors.isEmpty()) {
+                logger.warn("Validation error for POST /new-match: errors={}", errors);
+                throw new IllegalArgumentException(errors.toString());
+            }
+            player1Id = Long.parseLong(req.getParameter("player1Id"));
+            player2Id = Long.parseLong(req.getParameter("player2Id"));
+
         } catch (IllegalArgumentException e) {
             logger.warn("Missing or invalid required fields in JSON: error={}", e.getMessage());
             sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of(
-                    "code", "INVALID_JSON",
-                    "message", e.getMessage()
-                    // TODO: remove this debugging part
-
-            ));
-            return;
-        }
-
-
-        if (!errors.isEmpty()) {
-            logger.warn("Validation errors when creating new match: {}", errors);
-            sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of(
-                    "code", "VALIDATION_ERROR",
-                    "errors", errors,
-                    "player1", getString(json, "player1Id"),
-                    "player2", getString(json, "player2Id")
+                    "code", "INVALID_REQUEST",
+                    "errors:", e.getMessage()
 
             ));
             return;
@@ -162,18 +110,4 @@ public class NewMatchController extends BasicServlet {
     }
 
 
-    private Long getLong(JsonNode json, String fieldName) {
-        if (json == null || !json.has(fieldName) || !json.get(fieldName).canConvertToLong()) {
-            throw new IllegalArgumentException("Invalid JSON or missing field: " + fieldName);
-//            return null;
-        }
-        return json.get(fieldName).asLong();
-    }
-
-    private String getString(JsonNode json, String fieldName) {
-        if (json == null || !json.has(fieldName)) {
-            return null;
-        }
-        return json.get(fieldName).asText();
-    }
 }

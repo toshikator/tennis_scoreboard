@@ -1,13 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN">
-  <Appenders>
-    <Console name="Console" target="SYSTEM_OUT">
-      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
-    </Console>
-  </Appenders>
-  <Loggers>
-    <Root level="info">
-      <AppenderRef ref="Console"/>
-    </Root>
-  </Loggers>
+<Configuration status="WARN" monitorInterval="30">
+
+    <Properties>
+        <!--
+            app.log.dir can be passed from Tomcat.
+            If not passed, it uses ${catalina.base}/logs/tennis-scoreboard
+        -->
+        <Property name="LOG_DIR">${sys:app.log.dir:-${sys:catalina.base}/logs/tennis-scoreboard}</Property>
+
+        <Property name="LOG_PATTERN">
+            %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n
+        </Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+
+        <RollingFile
+                name="FileLogger"
+                fileName="${LOG_DIR}/app.log"
+                filePattern="${LOG_DIR}/app-%d{yyyy-MM-dd}-%i.log.gz">
+
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+
+            <Policies>
+                <!-- New file every day -->
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+
+                <!-- Or earlier if file becomes bigger than 10 MB -->
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+
+            <!-- Keep max 14 old log files -->
+            <DefaultRolloverStrategy max="14"/>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <!-- Your project package -->
+        <Logger name="pro.bukhman" level="debug" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="FileLogger"/>
+        </Logger>
+
+        <!-- Hibernate logs: useful, but not too noisy -->
+        <Logger name="org.hibernate" level="warn"/>
+
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="FileLogger"/>
+        </Root>
+    </Loggers>
+
 </Configuration>
