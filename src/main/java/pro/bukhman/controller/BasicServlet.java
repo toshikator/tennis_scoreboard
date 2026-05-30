@@ -12,13 +12,13 @@ import pro.bukhman.config.AppInitializer;
 import java.io.IOException;
 
 public class BasicServlet extends HttpServlet {
-    private static Logger logger;
+    protected Logger logger;
     protected final ObjectMapper objectMapper = new ObjectMapper();
     protected EntityManagerFactory emf;
 
     @Override
     public void init() throws ServletException {
-        logger = LogManager.getLogger(BasicServlet.class);
+        logger = LogManager.getLogger(getClass());
         logger.info("Initializing {}", getClass().getSimpleName());
         Object attribute = getServletContext()
                 .getAttribute(AppInitializer.ATTR_ENTITY_MANAGER_FACTORY);
@@ -33,11 +33,13 @@ public class BasicServlet extends HttpServlet {
 
     protected void sendJson(HttpServletResponse resp, int status, Object body)
             throws IOException {
-
         resp.setStatus(status);
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
-
+        if (logger != null && logger.isDebugEnabled()) {
+            String bodyType = (body == null) ? "null" : body.getClass().getSimpleName();
+            logger.debug("Sending JSON response: status={}, bodyType={}", status, bodyType);
+        }
         objectMapper.writeValue(resp.getWriter(), body);
     }
 }

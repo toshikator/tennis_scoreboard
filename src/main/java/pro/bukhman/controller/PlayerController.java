@@ -32,12 +32,13 @@ public class PlayerController extends BasicServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.info("Received GET request to /player");
+        logger.info("Incoming request: method=GET, uri={}, query={}, remoteIp={}", req.getRequestURI(), req.getQueryString(), req.getRemoteAddr());
         String idParam = req.getParameter("id");
         Long id;
         try {
             id = Long.parseLong(idParam);
         } catch (Exception e) {
+            logger.warn("Invalid 'id' parameter for /player: id={}", idParam);
             sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of(
                     "code", "INVALID_ID",
                     "message", "Query parameter 'id' must be a valid number"
@@ -48,8 +49,10 @@ public class PlayerController extends BasicServlet {
         try (EntityManager em = emf.createEntityManager()) {
             PlayerService playerService = new PlayerService(em);
             PlayerDto playerDto = playerService.getPlayerDtoById(id);
+            logger.debug("Returning player DTO for id={}", id);
             sendJson(resp, HttpServletResponse.SC_OK, playerDto);
         } catch (ResourceNotFoundException ex) {
+            logger.warn("Player not found: id={}", id);
             sendJson(resp, HttpServletResponse.SC_NOT_FOUND, Map.of(
                     "code", "PLAYER_NOT_FOUND",
                     "message", ex.getMessage()
@@ -60,7 +63,7 @@ public class PlayerController extends BasicServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.info("Received POST request to /player");
+        logger.info("Incoming request: method=POST, uri={}, remoteIp={}, contentType={}", req.getRequestURI(), req.getRemoteAddr(), req.getContentType());
         String firstName = req.getParameter("FirstName");
         String lastName = req.getParameter("LastName");
         NewPlayerValidator validator = new NewPlayerValidator();
@@ -70,7 +73,7 @@ public class PlayerController extends BasicServlet {
             firstName = firstName.trim();
             lastName = lastName.trim();
             Player player = playerService.createPlayer(firstName, lastName);
-
+            logger.info("Player created: id={}, firstName='{}', lastName='{}'", player.getId(), firstName, lastName);
             sendJson(resp, HttpServletResponse.SC_CREATED, Map.of(
                     "message", "Player created",
                     "playerId", player.getId()
@@ -78,8 +81,7 @@ public class PlayerController extends BasicServlet {
 
 
         } catch (ResourceAlreadyExistsException raee) {
-            logger.error("Error while processing POST /player: firstName='{}', lastName='{}',cause='{}'", firstName, lastName, raee.getCause());
-
+            logger.warn("Duplicate player attempted: firstName='{}', lastName='{}'", firstName, lastName);
             sendJson(resp, HttpServletResponse.SC_CONFLICT, Map.of(
                     "code", "DUPLICATE_PLAYER",
                     "message", "Player with this first name and last name already exists",
@@ -88,13 +90,7 @@ public class PlayerController extends BasicServlet {
             ));
 
         } catch (IllegalArgumentException e) {
-            logger.error(
-                    "Error while processing POST /player: firstName='{}', lastName='{}'",
-                    firstName,
-                    lastName,
-                    e
-            );
-
+            logger.warn("Validation error for POST /player: firstName='{}', lastName='{}', msg={}", firstName, lastName, e.getMessage());
             sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of(
                     "code", "Validation Issue",
                     "message", e.getMessage()
@@ -102,7 +98,7 @@ public class PlayerController extends BasicServlet {
 
         } catch (Exception e) {
             logger.error(
-                    "Error while processing POST /player: firstName='{}', lastName='{}'",
+                    "Unexpected error while processing POST /player: firstName='{}', lastName='{}'",
                     firstName,
                     lastName,
                     e
