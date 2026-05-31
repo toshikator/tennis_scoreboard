@@ -1,7 +1,6 @@
 package pro.bukhman.service;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pro.bukhman.exception.ResourceAlreadyExistsException;
@@ -36,7 +35,7 @@ public class PlayerService extends BasicService {
         if (offset < 0) {
             offset = 0;
         }
-        List<Player> players = playerRepository.findPage(offset, limit);
+        List<Player> players = playerRepository.getDataForPagination(offset, limit);
         List<PlayerDto> playersDto = players.stream().map(player -> new PlayerDto(player.getId(), player.getFirstName(), player.getLastName())).toList();
         PaginationDto paginationDto = new PaginationDto(offset, limit, count);
         return new ResponsePaginationDto<PlayerDto>(playersDto, paginationDto);

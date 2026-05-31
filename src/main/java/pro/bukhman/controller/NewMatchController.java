@@ -57,7 +57,7 @@ public class NewMatchController extends BasicServlet {
             player2Id = Long.parseLong(req.getParameter("player2Id"));
 
         } catch (IllegalArgumentException e) {
-            logger.warn("Missing or invalid required fields in JSON: error={}", e.getMessage());
+            logger.warn("Missing or invalid required fields: error={}", e.getMessage());
             sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of(
                     "code", "INVALID_REQUEST",
                     "errors", e.getMessage()

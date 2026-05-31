@@ -38,7 +38,7 @@ public class BasicRepository<T, ID> {
                 .getResultList();
     }
 
-    public List<T> findPage(int page, int size) {
+    public List<T> getDataForPagination(int page, int size) {
         String jpql = "select e from " + entityClass.getSimpleName() + " e";
 
         return em.createQuery(jpql, entityClass)

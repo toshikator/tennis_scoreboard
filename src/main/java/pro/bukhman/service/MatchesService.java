@@ -8,7 +8,6 @@ import pro.bukhman.exception.ResourceAlreadyExistsException;
 import pro.bukhman.exception.ResourceNotFoundException;
 import pro.bukhman.model.dto.MatchDto;
 import pro.bukhman.model.dto.PaginationDto;
-import pro.bukhman.model.dto.PlayerDto;
 import pro.bukhman.model.dto.ResponsePaginationDto;
 import pro.bukhman.model.entity.Match;
 import pro.bukhman.model.entity.Player;
@@ -38,7 +37,7 @@ public class MatchesService extends BasicService {
         if (offset < 0) {
             offset = 0;
         }
-        List<Match> matches = matchRepository.findPage(offset, limit);
+        List<Match> matches = matchRepository.getDataForPagination(offset, limit);
         List<MatchDto> matchesDto = matches.stream().map(match -> new MatchDto(match.getPlayer1().getId(), match.getPlayer2().getId(), match.getWinner().getId(), match.getId())).toList();
         PaginationDto paginationDto = new PaginationDto(offset, limit, count);
         return new ResponsePaginationDto<MatchDto>(matchesDto, paginationDto);
