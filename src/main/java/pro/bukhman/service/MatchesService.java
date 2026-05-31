@@ -67,12 +67,20 @@ public class MatchesService extends BasicService {
 
     public List<MatchDto> getMatchesByPlayerFirstnameDto(String playerFirstname) {
         List<Match> matches = matchRepository.findMatchesByPlayerFirstname(playerFirstname);
-        return matches.stream().map(match -> new MatchDto(match.getPlayer1().getId(), match.getPlayer2().getId(), match.getWinner().getId(), match.getId())).toList();
+        return matches.stream().map(match -> new MatchDto(match.getPlayer1().getId(), match.getPlayer2().getId(),
+                match.getWinner().getId(), match.getId())).toList();
     }
 
     public List<MatchDto> getMatchesByPlayerLastnameDto(String playerLastname) {
         List<Match> matches = matchRepository.findMatchesByPlayerLastname(playerLastname);
-        return matches.stream().map(match -> new MatchDto(match.getPlayer1().getId(), match.getPlayer2().getId(), match.getWinner().getId(), match.getId())).toList();
+        return matches.stream().map(match -> new MatchDto(match.getPlayer1().getId(), match.getPlayer2().getId(),
+                match.getWinner().getId(), match.getId())).toList();
+    }
+
+    public List<MatchDto> getMatchesByPlayerFullNameDto(String playerLastname, String playerFirstname) {
+        List<Match> matches = matchRepository.findMatchesByPlayerFullName(playerLastname, playerFirstname);
+        return matches.stream().map(match -> new MatchDto(match.getPlayer1().getId(), match.getPlayer2().getId(),
+                match.getWinner().getId(), match.getId())).toList();
     }
 
     public List<Match> getMatchesByPlayerLastname(String playerLastname) {
@@ -94,7 +102,8 @@ public class MatchesService extends BasicService {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
-            logger.error("Failed to create match: player1='{}', player2='{}', winner='{}'", player1.getFirstName(), player2.getFirstName(), winner.getFirstName());
+            logger.error("Failed to create match: player1='{}', player2='{}', winner='{}'",
+                    player1.getFirstName(), player2.getFirstName(), winner.getFirstName());
             throw new ResourceAlreadyExistsException("Match with this players already exists", e.getCause());
 
         }

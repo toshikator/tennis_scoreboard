@@ -43,7 +43,15 @@ public class MatchesController extends BasicServlet {
                 sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, Map.of("message", "Internal server error: " + e.getMessage(),
                         "stackTrace", e.getStackTrace().toString().replace("\n", "")));
             }
-
+        } else if (req.getParameter("firstName") != null && req.getParameter("lastName") != null) {
+            try (EntityManager em = emf.createEntityManager()) {
+                String firstName = req.getParameter("firstName");
+                String lastName = req.getParameter("lastName");
+                logger.info("/matches by firstName and lastName: firstName={}, lastName={}", firstName, lastName);
+                MatchesService matchesService = new MatchesService(em);
+                List<MatchDto> matchDtos = matchesService.getMatchesByPlayerFullNameDto(lastName, firstName);
+                sendJson(resp, HttpServletResponse.SC_OK, matchDtos);
+            }
         } else if (req.getParameter("firstName") != null) {
             try (EntityManager em = emf.createEntityManager()) {
                 String firstName = req.getParameter("firstName");

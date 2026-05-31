@@ -32,4 +32,13 @@ public class MatchRepository extends BasicRepository<Match, Long> {
                 .getResultList();
     }
 
+    public List<Match> findMatchesByPlayerFullName(String playerLastname, String playerFirstname) {
+        return em.createQuery("""
+                SELECT m FROM Match m
+                WHERE m.player1.firstName=:playerFirstname AND 
+                m.player1.lastName=:playerLastname
+                OR m.player2.firstName=:playerFirstname AND 
+                m.player2.lastName=:playerLastname
+                """, Match.class).setParameter("playerLastname", playerLastname).setParameter("playerFirstname", playerFirstname).getResultList();
+    }
 }
