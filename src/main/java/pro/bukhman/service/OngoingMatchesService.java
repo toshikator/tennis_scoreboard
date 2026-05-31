@@ -3,6 +3,7 @@ package pro.bukhman.service;
 import jakarta.persistence.EntityManager;
 import pro.bukhman.exception.MatchIsAlreadyFinishedException;
 import pro.bukhman.exception.MatchNotFoundException;
+import pro.bukhman.exception.ResourceNotFoundException;
 import pro.bukhman.model.entity.Player;
 import pro.bukhman.ongoingMatchStorage.OngoingMatchStorage;
 import pro.bukhman.model.OngoingMatch;
@@ -34,6 +35,11 @@ public class OngoingMatchesService extends BasicService {
     public void addPoint(UUID matchId, Long playerId) {
         OngoingMatch match = ongoingMatchStorage.getById(matchId)
                 .orElseThrow(() -> new MatchNotFoundException("Match not found"));
+        try {
+            PlayerDto player = match.getPlayerById(playerId);
+        } catch (Exception e) {
+            throw new ResourceNotFoundException("Player not found", e.getCause());
+        }
 
         if (match.isFinished()) {
             throw new MatchIsAlreadyFinishedException("Match is already finished. Cannot add points to it.");

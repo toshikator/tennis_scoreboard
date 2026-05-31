@@ -11,10 +11,13 @@ import org.apache.logging.log4j.Logger;
 import pro.bukhman.exception.InvalidUUIDException;
 import pro.bukhman.exception.MatchIsAlreadyFinishedException;
 import pro.bukhman.exception.MatchNotFoundException;
+import pro.bukhman.exception.ResourceNotFoundException;
+import pro.bukhman.model.OngoingMatch;
 import pro.bukhman.ongoingMatchStorage.OngoingMatchStorage;
 import pro.bukhman.model.dto.OngoingMatchDto;
 import pro.bukhman.service.MatchesService;
 import pro.bukhman.service.OngoingMatchesService;
+import pro.bukhman.service.PlayerService;
 import pro.bukhman.validation.UuidValidator;
 
 import java.io.IOException;
@@ -70,12 +73,21 @@ public class MatchScoreController extends BasicServlet {
 
             Long playerForScoreId;
             playerForScoreId = Long.parseLong(req.getParameter("player_for_score_id"));
+
+
             OngoingMatchesService ongoingMatchesService = new OngoingMatchesService(em, ongoingMatchStorage);
             ongoingMatchesService.addPoint(matchUUID, playerForScoreId);
+
+
             OngoingMatchDto dto = ongoingMatchStorage.getDtoByUUID(matchUUID);
             logger.info("POST /match-score: match_id={}, player_for_score_id={}", matchId, playerForScoreId);
             sendJson(resp, HttpServletResponse.SC_OK, dto);
-
+        } catch (ResourceNotFoundException e) {
+            logger.warn("Player not found on current ongoingMatch: {}", e.getMessage());
+            sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of(
+                    "code", "PLAYER_NOT_FOUND",
+                    "message", "wrong player ID, for adding score player should participate the match"
+            ));
         } catch (InvalidUUIDException e) {
             logger.warn("Invalid UUID received POST method: match_id={}, error={}", matchId, e.getMessage());
             sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of("message: ", "Invalid Match UUID", "error: ", e.getMessage()));
