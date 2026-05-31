@@ -32,4 +32,10 @@ public class PlayerRepository extends BasicRepository<Player, Long> {
 
     }
 
+    public Player findByFullname(String firstName, String lastName) {
+        return em.createQuery(
+                        "from Player p where p.lastName=:lastName and p.firstName=:firstName", Player.class)
+                .setParameter("firstName", firstName).setParameter("lastName", lastName).getSingleResult();
+    }
+
 }

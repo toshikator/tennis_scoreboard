@@ -1,6 +1,7 @@
 package pro.bukhman.service;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pro.bukhman.exception.ResourceAlreadyExistsException;
@@ -47,7 +48,7 @@ public class PlayerService extends BasicService {
     }
 
     public PlayerDto getPlayerDtoById(Long id) {
-        Player player = playerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Player not found"));
+        Player player = playerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Player not found, id=" + id));
         return new PlayerDto(player.getId(), player.getFirstName(), player.getLastName());
     }
 
@@ -73,16 +74,22 @@ public class PlayerService extends BasicService {
     public Player createPlayer(String firstName, String lastName) {
         try {
             em.getTransaction().begin();
+            if (playerRepository.findByFullname(firstName, lastName) != null) {
+                logger.warn("Duplicate player attempted: firstName='{}', lastName='{}'", firstName, lastName);
+                throw new ResourceAlreadyExistsException("Player with this first name and last name already exists");
+            }
             Player player1 = playerRepository.save(new Player(firstName, lastName));
             em.getTransaction().commit();
             return player1;
 
+
         } catch (Exception e) {
+            logger.error("Failed to create player: firstName='{}', lastName='{}'", firstName, lastName, e);
+            throw e;
+        } finally {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
-            logger.error("Failed to create player: firstName='{}', lastName='{}'", firstName, lastName, e);
-            throw new ResourceAlreadyExistsException("Player with this first name and last name already exists", e.getCause());
         }
     }
 }

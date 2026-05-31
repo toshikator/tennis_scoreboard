@@ -42,8 +42,8 @@ public class PlayersController extends BasicServlet {
             } catch (Exception e) {
                 logger.error("Error fetching all players, cause=", e);
                 sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                        Map.of("message", "Internal server error: " + e.getMessage(),
-                                "stackTrace", e.getStackTrace().toString().replace("\n", "")));
+                        Map.of("message", "Internal server error: " + e.getMessage()));
+
             }
         } else if (req.getParameter("firstName") != null && req.getParameter("lastName") == null) {
             String firstName = req.getParameter("firstName");
@@ -73,18 +73,18 @@ public class PlayersController extends BasicServlet {
                                 "stackTrace", e.getStackTrace().toString().replace("\n", "")));
             }
         } else if (req.getParameter("limit") != null && req.getParameter("offset") != null) {
-            Integer limit = Integer.parseInt(req.getParameter("limit"));
-            Integer offset = Integer.parseInt(req.getParameter("offset"));
-            logger.info("/players pagination: limit={}, offset={}", limit, offset);
             try (EntityManager em = emf.createEntityManager()) {
+                Integer limit = Integer.parseInt(req.getParameter("limit"));
+                Integer offset = Integer.parseInt(req.getParameter("offset"));
+                logger.info("/players pagination: limit={}, offset={}", limit, offset);
                 PlayerService playerService = new PlayerService(em);
                 ResponsePaginationDto<PlayerDto> players = playerService.getPlayersPagination(limit, offset);
                 sendJson(resp, HttpServletResponse.SC_OK, players);
             } catch (Exception e) {
                 logger.error("Error fetching players with pagination, cause=", e);
                 sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                        Map.of("message", "Internal server error: " + e.getMessage(),
-                                "stackTrace", e.getStackTrace().toString().replace("\n", "")));
+                        Map.of("message", "Internal server error: " + e.getMessage()));
+
             }
         }
     }

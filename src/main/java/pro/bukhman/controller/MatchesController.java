@@ -51,6 +51,7 @@ public class MatchesController extends BasicServlet {
                 MatchesService matchesService = new MatchesService(em);
 //                List<Match> matchList = matchesService.getMatchesByPlayerFirstname(firstName);
                 List<MatchDto> matchDtos = matchesService.getMatchesByPlayerFirstnameDto(firstName);
+                sendJson(resp, HttpServletResponse.SC_OK, matchDtos);
 
             } catch (Exception e) {
                 logger.error("Error getting matches by firstName, cause=", e);
@@ -65,6 +66,7 @@ public class MatchesController extends BasicServlet {
                 MatchesService matchesService = new MatchesService(em);
 //                List<Match> matchList = matchesService.getMatchesByPlayerFirstname(firstName);
                 List<MatchDto> matchDtos = matchesService.getMatchesByPlayerLastnameDto(lastName);
+                sendJson(resp, HttpServletResponse.SC_OK, matchDtos);
 
             } catch (Exception e) {
                 logger.error("Error getting matches by lastName, cause=", e);
@@ -83,8 +85,7 @@ public class MatchesController extends BasicServlet {
 
             } catch (Exception e) {
                 logger.error("Error getting matches with pagination, cause=", e);
-                sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, Map.of("message", "Internal server error: " + e.getMessage(),
-                        "stackTrace", e.getStackTrace().toString().replace("\n", "")));
+                sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, Map.of("message", "Internal server error: " + e.getMessage()));
             }
         } else {
             logger.info("/matches list all");

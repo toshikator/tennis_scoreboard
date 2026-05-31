@@ -145,16 +145,12 @@ public class OngoingMatch {
     }
 
     public synchronized PlayerDto getPlayer1() {
-        if (!isFinished) {
-            throw new MatchIsNotFinishedYetException("Match is not finished yet");
-        }
+
         return player1;
     }
 
     public synchronized PlayerDto getPlayer2() {
-        if (!isFinished) {
-            throw new MatchIsNotFinishedYetException("Match is not finished yet");
-        }
+
         return player2;
     }
 
@@ -175,7 +171,7 @@ public class OngoingMatch {
         }
     }
 
-    public boolean isFinished() {
+    public synchronized boolean isFinished() {
         return isFinished;
     }
 }

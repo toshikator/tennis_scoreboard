@@ -60,7 +60,7 @@ public class NewMatchController extends BasicServlet {
             logger.warn("Missing or invalid required fields in JSON: error={}", e.getMessage());
             sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of(
                     "code", "INVALID_REQUEST",
-                    "errors:", e.getMessage()
+                    "errors", e.getMessage()
             ));
             return;
         }
@@ -68,8 +68,8 @@ public class NewMatchController extends BasicServlet {
         try (EntityManager em = emf.createEntityManager()) {
             OngoingMatchesService ongoingMatchesService = new OngoingMatchesService(em, ongoingMatchStorage);
             PlayerService playerService = new PlayerService(em);
-            playerService.getPlayerById(player1Id);
-            playerService.getPlayerById(player2Id);
+//            playerService.getPlayerById(player1Id);
+//            playerService.getPlayerById(player2Id);
             UUID matchId = ongoingMatchesService.createMatch(player1Id, player2Id);
             logger.info("New match created successfully: matchId={}", matchId);
             sendJson(resp, HttpServletResponse.SC_CREATED, Map.of(
