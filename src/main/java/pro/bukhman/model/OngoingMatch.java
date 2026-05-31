@@ -3,8 +3,7 @@ package pro.bukhman.model;
 import pro.bukhman.exception.MatchIsAlreadyFinishedException;
 import pro.bukhman.exception.MatchIsNotFinishedYetException;
 import pro.bukhman.model.dto.PlayerDto;
-import pro.bukhman.model.entity.OngoingMatchSnapshot;
-import pro.bukhman.model.entity.Player;
+import pro.bukhman.model.dto.OngoingMatchSnapshot;
 
 import java.time.LocalDateTime;
 
@@ -60,7 +59,7 @@ public class OngoingMatch {
         return ongoingMatchSnapshot;
     }
 
-    protected synchronized void addPoint(PlayerDto player) {
+    public synchronized void addPoint(PlayerDto player) {
         if (isFinished) {
             throw new MatchIsAlreadyFinishedException("Match is already finished");
         }
@@ -164,5 +163,19 @@ public class OngoingMatch {
             throw new MatchIsNotFinishedYetException("Match is not finished yet");
         }
         return winner;
+    }
+
+    public synchronized PlayerDto getPlayerById(Long id) {
+        if (player1.id().equals(id)) {
+            return player1;
+        } else if (player2.id().equals(id)) {
+            return player2;
+        } else {
+            throw new IllegalArgumentException("Unknown player");
+        }
+    }
+
+    public boolean isFinished() {
+        return isFinished;
     }
 }

@@ -1,4 +1,4 @@
-package pro.bukhman.config;
+package pro.bukhman.initializing;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -8,7 +8,7 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
-import pro.bukhman.matchStorage.OngoingMatchStorage;
+import pro.bukhman.ongoingMatchStorage.OngoingMatchStorage;
 import pro.bukhman.util.HibernateUtil;
 import pro.bukhman.util.PropertiesReader;
 

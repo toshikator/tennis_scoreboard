@@ -7,13 +7,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import pro.bukhman.config.AppInitializer;
+import pro.bukhman.initializing.AppInitializer;
 
 import java.io.IOException;
 
 public class BasicServlet extends HttpServlet {
-    protected Logger logger;
     protected final ObjectMapper objectMapper = new ObjectMapper();
+    protected Logger logger;
     protected EntityManagerFactory emf;
 
     @Override

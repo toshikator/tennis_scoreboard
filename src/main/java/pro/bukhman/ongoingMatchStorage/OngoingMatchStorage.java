@@ -1,10 +1,10 @@
-package pro.bukhman.matchStorage;
+package pro.bukhman.ongoingMatchStorage;
 
 import pro.bukhman.exception.TooManyActiveMatchesException;
 import pro.bukhman.model.OngoingMatch;
 import pro.bukhman.model.dto.OngoingMatchDto;
 import pro.bukhman.model.dto.PlayerDto;
-import pro.bukhman.model.entity.OngoingMatchSnapshot;
+import pro.bukhman.model.dto.OngoingMatchSnapshot;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -31,12 +31,12 @@ public class OngoingMatchStorage {
         ongoingMatches.entrySet().removeIf(entry -> (Math.abs(Duration.between(entry.getValue().getStartedAt(), LocalDateTime.now()).toMinutes())) > MATCH_TTL_MINUTES);
     }
 
-    public Optional<OngoingMatch> findById(UUID id) {
+    public Optional<OngoingMatch> getById(UUID id) {
         return Optional.ofNullable(ongoingMatches.get(id));
     }
 
     public OngoingMatchDto getDtoByUUID(UUID id) {
-        OngoingMatch ongoingMatch = findById(id).orElseThrow(() -> new IllegalArgumentException("Match not found"));
+        OngoingMatch ongoingMatch = getById(id).orElseThrow(() -> new IllegalArgumentException("Match not found"));
         OngoingMatchSnapshot s = ongoingMatch.getSnapshot();
         PlayerDto p1 = s.getPlayer1();
         PlayerDto p2 = s.getPlayer2();

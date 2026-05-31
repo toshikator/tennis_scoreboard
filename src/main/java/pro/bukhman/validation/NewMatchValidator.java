@@ -26,20 +26,28 @@ public class NewMatchValidator {
             logger.warn("Validation failed: {}", errors);
             return errors;
         }
+        Long player1IdLong;
+        Long player2IdLong;
+        try {
+            player1IdLong = Long.parseLong(player1Id);
+            player2IdLong = Long.parseLong(player2Id);
 
-        Long player1IdLong = Long.parseLong(player1Id);
-        Long player2IdLong = Long.parseLong(player2Id);
+            if (player1IdLong <= 0) {
+                errors.put("player1Id", "First player id must be positive");
+            }
 
-        if (player1IdLong <= 0) {
-            errors.put("player1Id", "First player id must be positive");
-        }
+            if (player2IdLong <= 0) {
+                errors.put("player2Id", "Second player id must be positive");
+            }
 
-        if (player2IdLong <= 0) {
-            errors.put("player2Id", "Second player id must be positive");
-        }
-
-        if (player1Id.equals(player2Id)) {
-            errors.put("player2Id", "Players must be different");
+            if (player1Id.equals(player2Id)) {
+                errors.put("player2Id", "Players must be different");
+            }
+        } catch (NumberFormatException e) {
+            errors.put("player1Id", "Invalid player id");
+            errors.put("player2Id", "Invalid player id");
+        } catch (Exception e) {
+            errors.put("Unexpected exception: ", e.getMessage());
         }
 
         if (!errors.isEmpty()) {

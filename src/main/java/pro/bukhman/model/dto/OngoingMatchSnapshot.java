@@ -1,6 +1,4 @@
-package pro.bukhman.model.entity;
-
-import pro.bukhman.model.dto.PlayerDto;
+package pro.bukhman.model.dto;
 
 public class OngoingMatchSnapshot {
     private int GAMES_TO_WIN_SET;

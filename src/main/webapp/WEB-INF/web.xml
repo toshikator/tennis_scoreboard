@@ -6,7 +6,7 @@
     <!--  Using @WebServlet annotations for servlet mapping; web.xml kept minimal.
  -->
     <listener>
-        <listener-class>pro.bukhman.config.AppInitializer</listener-class>
+        <listener-class>pro.bukhman.initializing.AppInitializer</listener-class>
     </listener>
     <!--  Ensure the correct content type for .ico files (Tomcat 10+/Servlet 6 may not map it by default)
  -->

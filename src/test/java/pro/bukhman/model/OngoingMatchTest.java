@@ -1,21 +1,15 @@
 package pro.bukhman.model;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pro.bukhman.exception.MatchIsAlreadyFinishedException;
 import pro.bukhman.exception.MatchIsNotFinishedYetException;
 import pro.bukhman.model.dto.PlayerDto;
-import pro.bukhman.model.entity.OngoingMatchSnapshot;
+import pro.bukhman.model.dto.OngoingMatchSnapshot;
 import pro.bukhman.model.entity.Player;
 import pro.bukhman.service.PlayerService;
-import pro.bukhman.util.HibernateUtil;
-import pro.bukhman.util.PropertiesReader;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 

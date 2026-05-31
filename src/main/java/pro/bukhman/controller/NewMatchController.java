@@ -8,18 +8,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import pro.bukhman.exception.ResourceNotFoundException;
 import pro.bukhman.exception.TooManyActiveMatchesException;
-import pro.bukhman.matchStorage.OngoingMatchStorage;
-import pro.bukhman.service.MatchesService;
+import pro.bukhman.ongoingMatchStorage.OngoingMatchStorage;
 import pro.bukhman.service.OngoingMatchesService;
 import pro.bukhman.service.PlayerService;
 import pro.bukhman.validation.NewMatchValidator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -65,7 +61,6 @@ public class NewMatchController extends BasicServlet {
             sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of(
                     "code", "INVALID_REQUEST",
                     "errors:", e.getMessage()
-
             ));
             return;
         }
