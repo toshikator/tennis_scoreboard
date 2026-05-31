@@ -72,6 +72,10 @@ public class PlayersController extends BasicServlet {
                         Map.of("message", "Internal server error: " + e.getMessage(),
                                 "stackTrace", e.getStackTrace().toString().replace("\n", "")));
             }
+        } else if (req.getParameter("firstName") != null && req.getParameter("lastName") != null) {
+            logger.error("Invalid request: both firstName and lastName are provided");
+            sendJson(resp, HttpServletResponse.SC_BAD_REQUEST,
+                    Map.of("message", "Invalid request: both firstName and lastName are provided"));
         } else if (req.getParameter("limit") != null && req.getParameter("offset") != null) {
             try (EntityManager em = emf.createEntityManager()) {
                 Integer limit = Integer.parseInt(req.getParameter("limit"));
