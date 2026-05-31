@@ -16,19 +16,15 @@ public class OngoingMatchesService extends BasicService {
     private final PlayerService playerService;
     private final OngoingMatchStorage ongoingMatchStorage;
     private final MatchesService finishedMatchService;
-//    private final MatchScoreCalculationService matchCalculator;
 
     public OngoingMatchesService(EntityManager em, OngoingMatchStorage ongoingMatchStorage) {
         super(em);
         this.playerService = new PlayerService(em);
         this.ongoingMatchStorage = ongoingMatchStorage;
         this.finishedMatchService = new MatchesService(em);
-//        this.matchCalculator = new MatchScoreCalculationService(em);
     }
 
     public UUID createMatch(Long player1Id, Long player2Id) {
-//        Player player1 = playerService.getPlayerById(player1Id);
-//        Player player2 = playerService.getPlayerById(player2Id);
         PlayerDto player1Dto = playerService.getPlayerDtoById(player1Id);
         PlayerDto player2Dto = playerService.getPlayerDtoById(player2Id);
         OngoingMatch match = new OngoingMatch(player1Dto, player2Dto);
@@ -44,7 +40,6 @@ public class OngoingMatchesService extends BasicService {
         }
 
         PlayerDto pointWinner = match.getPlayerById(playerId);
-
         match.addPoint(pointWinner);
 
         if (match.isFinished()) {
@@ -52,7 +47,6 @@ public class OngoingMatchesService extends BasicService {
             Player player2 = playerService.getPlayerById(match.getPlayer2().id());
             Player winner = playerService.getPlayerById(match.getWinner().id());
             finishedMatchService.createMatch(player1, player2, winner);
-//            ongoingMatchStorage.remove(matchId);
         }
     }
 
