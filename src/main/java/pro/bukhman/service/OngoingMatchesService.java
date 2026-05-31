@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import pro.bukhman.exception.MatchIsAlreadyFinishedException;
 import pro.bukhman.exception.MatchNotFoundException;
 import pro.bukhman.exception.ResourceNotFoundException;
+import pro.bukhman.model.dto.OngoingMatchDto;
 import pro.bukhman.model.entity.Player;
 import pro.bukhman.ongoingMatchStorage.OngoingMatchStorage;
 import pro.bukhman.model.OngoingMatch;
@@ -32,28 +33,31 @@ public class OngoingMatchesService extends BasicService {
         return ongoingMatchStorage.add(match);
     }
 
-    public void addPoint(UUID matchId, Long playerId) {
+    public OngoingMatchDto addPoint(UUID matchId, Long playerId) {
         OngoingMatch match = ongoingMatchStorage.getById(matchId)
                 .orElseThrow(() -> new MatchNotFoundException("Match not found"));
+        PlayerDto pointWinner;
         try {
-            PlayerDto player = match.getPlayerById(playerId);
-        } catch (Exception e) {
-            throw new ResourceNotFoundException("Player not found", e.getCause());
+            pointWinner = match.getPlayerById(playerId);
+        } catch (IllegalArgumentException e) {
+            throw new ResourceNotFoundException("Player does not participate in this match", e);
         }
 
         if (match.isFinished()) {
             throw new MatchIsAlreadyFinishedException("Match is already finished. Cannot add points to it.");
         }
 
-        PlayerDto pointWinner = match.getPlayerById(playerId);
-        match.addPoint(pointWinner);
 
+        match.addPoint(pointWinner);
+        OngoingMatchDto dto = ongoingMatchStorage.getDtoByUUID(matchId);
         if (match.isFinished()) {
             Player player1 = playerService.getPlayerById(match.getPlayer1().id());
             Player player2 = playerService.getPlayerById(match.getPlayer2().id());
             Player winner = playerService.getPlayerById(match.getWinner().id());
             finishedMatchService.createMatch(player1, player2, winner);
+            ongoingMatchStorage.remove(matchId);
         }
+        return dto;
     }
 
 

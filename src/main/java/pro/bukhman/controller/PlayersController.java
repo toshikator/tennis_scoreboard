@@ -55,8 +55,7 @@ public class PlayersController extends BasicServlet {
             } catch (Exception e) {
                 logger.error("Error fetching players by firstName, cause=", e);
                 sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                        Map.of("message", "Internal server error: " + e.getMessage(),
-                                "stackTrace", e.getStackTrace().toString().replace("\n", "")));
+                        Map.of("message", "Internal server error: " + e.getMessage()));
             }
 
         } else if (req.getParameter("firstName") == null && req.getParameter("lastName") != null) {
@@ -69,8 +68,8 @@ public class PlayersController extends BasicServlet {
             } catch (Exception e) {
                 logger.error("Error fetching players by lastName, cause=", e);
                 sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                        Map.of("message", "Internal server error: " + e.getMessage(),
-                                "stackTrace", e.getStackTrace().toString().replace("\n", "")));
+                        Map.of("message", "Internal server error: " + e.getMessage()));
+
             }
         } else if (req.getParameter("firstName") != null && req.getParameter("lastName") != null) {
             logger.error("Invalid request: both firstName and lastName are provided");

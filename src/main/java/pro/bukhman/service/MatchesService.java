@@ -104,7 +104,7 @@ public class MatchesService extends BasicService {
             }
             logger.error("Failed to create match: player1='{}', player2='{}', winner='{}'",
                     player1.getFirstName(), player2.getFirstName(), winner.getFirstName());
-            throw new ResourceAlreadyExistsException("Match with this players already exists", e.getCause());
+            throw new ResourceAlreadyExistsException("Match with this players already exists", e);
 
         }
     }

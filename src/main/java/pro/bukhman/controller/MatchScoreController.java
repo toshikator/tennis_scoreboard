@@ -70,16 +70,13 @@ public class MatchScoreController extends BasicServlet {
             uuidValidator.validate(req.getParameter("match_id"));
             logger.info("POST /match-score: match_id={}", matchId);
             matchUUID = UUID.fromString(matchId);
-
             Long playerForScoreId;
             playerForScoreId = Long.parseLong(req.getParameter("player_for_score_id"));
 
-
             OngoingMatchesService ongoingMatchesService = new OngoingMatchesService(em, ongoingMatchStorage);
-            ongoingMatchesService.addPoint(matchUUID, playerForScoreId);
+            OngoingMatchDto dto = ongoingMatchesService.addPoint(matchUUID, playerForScoreId);
 
 
-            OngoingMatchDto dto = ongoingMatchStorage.getDtoByUUID(matchUUID);
             logger.info("POST /match-score: match_id={}, player_for_score_id={}", matchId, playerForScoreId);
             sendJson(resp, HttpServletResponse.SC_OK, dto);
         } catch (ResourceNotFoundException e) {

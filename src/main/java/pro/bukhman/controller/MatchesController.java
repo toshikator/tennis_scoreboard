@@ -40,8 +40,7 @@ public class MatchesController extends BasicServlet {
                 sendJson(resp, HttpServletResponse.SC_OK, matchDto);
             } catch (Exception e) {
                 logger.error("Error getting match by id: id={}, cause=", idParam, e);
-                sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, Map.of("message", "Internal server error: " + e.getMessage(),
-                        "stackTrace", e.getStackTrace().toString().replace("\n", "")));
+                sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, Map.of("message", "Internal server error: " + e.getMessage()));
             }
         } else if (req.getParameter("firstName") != null && req.getParameter("lastName") != null) {
             try (EntityManager em = emf.createEntityManager()) {
@@ -57,7 +56,6 @@ public class MatchesController extends BasicServlet {
                 String firstName = req.getParameter("firstName");
                 logger.info("/matches by firstName: firstName={}", firstName);
                 MatchesService matchesService = new MatchesService(em);
-//                List<Match> matchList = matchesService.getMatchesByPlayerFirstname(firstName);
                 List<MatchDto> matchDtos = matchesService.getMatchesByPlayerFirstnameDto(firstName);
                 sendJson(resp, HttpServletResponse.SC_OK, matchDtos);
 
@@ -72,15 +70,13 @@ public class MatchesController extends BasicServlet {
                 String lastName = req.getParameter("lastName");
                 logger.info("/matches by lastName: lastName={}", lastName);
                 MatchesService matchesService = new MatchesService(em);
-//                List<Match> matchList = matchesService.getMatchesByPlayerFirstname(firstName);
                 List<MatchDto> matchDtos = matchesService.getMatchesByPlayerLastnameDto(lastName);
                 sendJson(resp, HttpServletResponse.SC_OK, matchDtos);
 
             } catch (Exception e) {
                 logger.error("Error getting matches by lastName, cause=", e);
                 sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                        Map.of("message", "Internal server error: " + e.getMessage(),
-                                "stackTrace", e.getStackTrace().toString().replace("\n", "")));
+                        Map.of("message", "Internal server error: " + e.getMessage()));
             }
         } else if (req.getParameter("limit") != null && req.getParameter("offset") != null) {
             try (EntityManager em = emf.createEntityManager()) {
