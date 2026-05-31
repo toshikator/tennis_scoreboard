@@ -2,8 +2,8 @@ package pro.bukhman.validation;
 
 public class NewPlayerValidator {
     public void validate(String firstName, String lastName) {
-        validateName(firstName, "FirstName");
-        validateName(lastName, "LastName");
+        validateName(firstName, "firstName");
+        validateName(lastName, "lastName");
     }
 
     private void validateName(String value, String fieldName) {

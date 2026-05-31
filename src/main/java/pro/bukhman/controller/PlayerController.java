@@ -63,9 +63,10 @@ public class PlayerController extends BasicServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.info("Incoming request: method=POST, uri={}, remoteIp={}, contentType={}", req.getRequestURI(), req.getRemoteAddr(), req.getContentType());
-        String firstName = req.getParameter("FirstName");
-        String lastName = req.getParameter("LastName");
+        logger.info("Incoming request: method=POST, uri={}, remoteIp={}, contentType={}",
+                req.getRequestURI(), req.getRemoteAddr(), req.getContentType());
+        String firstName = req.getParameter("firstName");
+        String lastName = req.getParameter("lastName");
         NewPlayerValidator validator = new NewPlayerValidator();
         try (EntityManager em = emf.createEntityManager()) {
             PlayerService playerService = new PlayerService(em);

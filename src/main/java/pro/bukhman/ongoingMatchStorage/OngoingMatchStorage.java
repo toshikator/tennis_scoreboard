@@ -42,7 +42,7 @@ public class OngoingMatchStorage {
         PlayerDto p2 = s.getPlayer2();
         OngoingMatchDto dto = new OngoingMatchDto(id, p1.id(), p2.id(), p1.firstName(), p2.firstName(), p1.lastName(),
                 p2.lastName(), s.getPlayer1Points(), s.getPlayer2Points(), s.getPlayer1Sets(), s.getPlayer2Sets(),
-                s.getPlayer1Games(), s.getPlayer2Games());
+                s.getPlayer1Games(), s.getPlayer2Games(), ongoingMatch.isFinished());
         return dto;
     }
 

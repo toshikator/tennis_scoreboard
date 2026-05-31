@@ -6,5 +6,6 @@ public record OngoingMatchDto(UUID matchUUID, Long player1Id, Long player2Id, St
                               String player2Firstname,
                               String player1Lastname, String player2Lastname, Integer player1Score,
                               Integer player2Score,
-                              Integer player1Set, Integer player2Set, Integer player1Game, Integer player2Game) {
+                              Integer player1Set, Integer player2Set, Integer player1Game, Integer player2Game,
+                              boolean isFinished) {
 }

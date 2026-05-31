@@ -74,7 +74,7 @@ public class PlayerService extends BasicService {
     public Player createPlayer(String firstName, String lastName) {
         try {
             em.getTransaction().begin();
-            if (playerRepository.findByFullname(firstName, lastName) != null) {
+            if (playerRepository.findByFullname(firstName, lastName).isPresent()) {
                 logger.warn("Duplicate player attempted: firstName='{}', lastName='{}'", firstName, lastName);
                 throw new ResourceAlreadyExistsException("Player with this first name and last name already exists");
             }
