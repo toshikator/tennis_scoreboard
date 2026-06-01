@@ -33,7 +33,7 @@ public class OngoingMatchesService extends BasicService {
         return ongoingMatchStorage.add(match);
     }
 
-    public OngoingMatchDto addPoint(UUID matchId, Long playerId) {
+    public OngoingMatchDto addPoint(UUID matchId, Long playerId) throws Exception {
         OngoingMatch match = ongoingMatchStorage.getById(matchId)
                 .orElseThrow(() -> new MatchNotFoundException("Match not found"));
         PlayerDto pointWinner;

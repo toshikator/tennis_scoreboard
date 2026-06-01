@@ -96,6 +96,8 @@ public class MatchScoreController extends BasicServlet {
         } catch (MatchNotFoundException e) {
             logger.warn("Match not found: match_id={}", matchId);
             sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of("message: ", "Match not found", "error: ", e.getMessage()));
+        } catch (Exception e) {
+            sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, Map.of("message: ", "Unexpected Exception", "error: ", e.getMessage()));
         }
 
     }

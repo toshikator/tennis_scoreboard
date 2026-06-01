@@ -37,8 +37,9 @@ public class MatchesController extends BasicServlet {
                 PositiveNumberValidation positiveNumberValidation = new PositiveNumberValidation();
                 positiveNumberValidation.validate(idParam);
                 Long id = Long.parseLong(idParam);
+                if (id == 0) throw new IllegalArgumentException("id must be positive number");
                 MatchesService matchesService = new MatchesService(em);
-                Match match = matchesService.getMatchById(id);
+//                Match match = matchesService.getMatchById(id);
                 MatchDto matchDto = matchesService.getMatchDtoById(id);
                 sendJson(resp, HttpServletResponse.SC_OK, matchDto);
             } catch (IllegalArgumentException e) {

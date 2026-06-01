@@ -91,7 +91,7 @@ public class MatchesService extends BasicService {
         return matchRepository.countAll();
     }
 
-    public Match createMatch(Player player1, Player player2, Player winner) {
+    public Match createMatch(Player player1, Player player2, Player winner) throws Exception {
         try {
             em.getTransaction().begin();
             Match match = matchRepository.save(new Match(player1, player2, winner));
@@ -104,7 +104,7 @@ public class MatchesService extends BasicService {
             }
             logger.error("Failed to create match: player1='{}', player2='{}', winner='{}'",
                     player1.getFirstName(), player2.getFirstName(), winner.getFirstName());
-            throw new ResourceAlreadyExistsException("Match with this players already exists", e);
+            throw new Exception("Unexpected exception during Match creating");
 
         }
     }
