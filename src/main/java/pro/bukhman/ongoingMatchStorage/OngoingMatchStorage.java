@@ -17,7 +17,7 @@ public class OngoingMatchStorage {
     private static final int MAX_ACTIVE_MATCHES = 100;
     private final ConcurrentHashMap<UUID, OngoingMatch> ongoingMatches = new ConcurrentHashMap<>();
 
-    public UUID add(OngoingMatch match) {
+    public synchronized UUID add(OngoingMatch match) {
         removeOldMatches();
         if (ongoingMatches.size() >= MAX_ACTIVE_MATCHES) {
             throw new TooManyActiveMatchesException("Too many active matches");

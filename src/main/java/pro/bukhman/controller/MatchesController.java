@@ -34,11 +34,16 @@ public class MatchesController extends BasicServlet {
             String idParam = req.getParameter("id");
             logger.info("/matches by id: id={}", idParam);
             try (EntityManager em = emf.createEntityManager()) {
+                PositiveNumberValidation positiveNumberValidation = new PositiveNumberValidation();
+                positiveNumberValidation.validate(idParam);
                 Long id = Long.parseLong(idParam);
                 MatchesService matchesService = new MatchesService(em);
                 Match match = matchesService.getMatchById(id);
                 MatchDto matchDto = matchesService.getMatchDtoById(id);
                 sendJson(resp, HttpServletResponse.SC_OK, matchDto);
+            } catch (IllegalArgumentException e) {
+                logger.error("Wrong id value: id={}", idParam);
+                sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of("message", "Invalid id"));
             } catch (Exception e) {
                 logger.error("Error getting match by id: id={}, cause=", idParam, e);
                 sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, Map.of("message", "Internal server error: " + e.getMessage()));
@@ -51,6 +56,10 @@ public class MatchesController extends BasicServlet {
                 MatchesService matchesService = new MatchesService(em);
                 List<MatchDto> matchDtos = matchesService.getMatchesByPlayerFullNameDto(lastName, firstName);
                 sendJson(resp, HttpServletResponse.SC_OK, matchDtos);
+            } catch (Exception e) {
+                logger.error("Error getting matches by firstName and lastName, cause=", e);
+                sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                        Map.of("message", "Internal server error: " + e.getMessage()));
             }
         } else if (req.getParameter("firstName") != null) {
             try (EntityManager em = emf.createEntityManager()) {
