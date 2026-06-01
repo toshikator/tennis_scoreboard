@@ -39,14 +39,14 @@ public class MatchScoreController extends BasicServlet {
         ongoingMatchStorage = (OngoingMatchStorage) context.getAttribute("ongoingMatchStorage");
         uuidValidator = new UuidValidator();
 
-        logger.info("NewMatchController initialized. OngoingMatchStorage present={} ", ongoingMatchStorage != null);
+        logger.info("MatchScoreController initialized. OngoingMatchStorage present={} ", ongoingMatchStorage != null);
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String matchIdParam = req.getParameter("match_id");
         logger.info("Received GET /match-score with match_id={}", matchIdParam);
-        try (EntityManager em = emf.createEntityManager()) {
+        try {
             uuidValidator.validate(matchIdParam);
             UUID matchId = UUID.fromString(matchIdParam);
             OngoingMatchDto dto = ongoingMatchStorage.getDtoByUUID(matchId);

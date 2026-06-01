@@ -11,6 +11,7 @@ import pro.bukhman.model.dto.MatchDto;
 import pro.bukhman.model.dto.ResponsePaginationDto;
 import pro.bukhman.model.entity.Match;
 import pro.bukhman.service.MatchesService;
+import pro.bukhman.validation.PositiveNumberValidation;
 
 import java.io.IOException;
 import java.util.List;
@@ -62,8 +63,8 @@ public class MatchesController extends BasicServlet {
             } catch (Exception e) {
                 logger.error("Error getting matches by firstName, cause=", e);
                 sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                        Map.of("message", "Internal server error: " + e.getMessage(),
-                                "stackTrace", e.getStackTrace().toString().replace("\n", "")));
+                        Map.of("message", "Internal server error: " + e.getMessage()));
+
             }
         } else if (req.getParameter("lastName") != null) {
             try (EntityManager em = emf.createEntityManager()) {
@@ -80,13 +81,19 @@ public class MatchesController extends BasicServlet {
             }
         } else if (req.getParameter("limit") != null && req.getParameter("offset") != null) {
             try (EntityManager em = emf.createEntityManager()) {
+                logger.info("Incoming request: method=GET, uri={}, query={}, remoteIp={}", req.getRequestURI(), req.getQueryString(), req.getRemoteAddr());
+                PositiveNumberValidation positiveNumberValidation = new PositiveNumberValidation();
+                positiveNumberValidation.validate(req.getParameter("limit"));
+                positiveNumberValidation.validate(req.getParameter("offset"));
                 Integer limit = Integer.parseInt(req.getParameter("limit"));
                 Integer offset = Integer.parseInt(req.getParameter("offset"));
                 logger.info("/matches pagination: limit={}, offset={}", limit, offset);
                 MatchesService matchesService = new MatchesService(em);
                 ResponsePaginationDto<MatchDto> matches = matchesService.getMatchesPagination(limit, offset);
                 sendJson(resp, HttpServletResponse.SC_OK, matches);
-
+            } catch (IllegalArgumentException e) {
+                logger.error("Wrong values on pagination: limit={}, offset={}", req.getParameter("limit"), req.getParameter("offset"));
+                sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of("message", "Invalid limit or offset"));
             } catch (Exception e) {
                 logger.error("Error getting matches with pagination, cause=", e);
                 sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, Map.of("message", "Internal server error: " + e.getMessage()));

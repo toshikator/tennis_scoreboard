@@ -50,8 +50,10 @@ public class NewMatchController extends BasicServlet {
         try {
             errors = validator.validate(req.getParameter("player1Id"), req.getParameter("player2Id"));
             if (!errors.isEmpty()) {
-                logger.warn("Validation error for POST /new-match: errors={}", errors);
-                throw new IllegalArgumentException(errors.toString());
+                sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of(
+                        "code", "VALIDATION_ERROR",
+                        "errors", errors
+                ));
             }
             player1Id = Long.parseLong(req.getParameter("player1Id"));
             player2Id = Long.parseLong(req.getParameter("player2Id"));
@@ -67,9 +69,6 @@ public class NewMatchController extends BasicServlet {
 
         try (EntityManager em = emf.createEntityManager()) {
             OngoingMatchesService ongoingMatchesService = new OngoingMatchesService(em, ongoingMatchStorage);
-            PlayerService playerService = new PlayerService(em);
-//            playerService.getPlayerById(player1Id);
-//            playerService.getPlayerById(player2Id);
             UUID matchId = ongoingMatchesService.createMatch(player1Id, player2Id);
             logger.info("New match created successfully: matchId={}", matchId);
             sendJson(resp, HttpServletResponse.SC_CREATED, Map.of(

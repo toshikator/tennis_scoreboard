@@ -12,6 +12,7 @@ import pro.bukhman.model.entity.Player;
 import pro.bukhman.repo.PlayerRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public class PlayerService extends BasicService {
     private static final Logger logger = LogManager.getLogger(PlayerService.class);
@@ -90,5 +91,11 @@ public class PlayerService extends BasicService {
                 em.getTransaction().rollback();
             }
         }
+    }
+
+    public Optional<PlayerDto> getPlayerDtoByFullname(String firstName, String lastName) {
+        return playerRepository.findByFullname(firstName, lastName).
+                map(player -> new PlayerDto(player.getId(), player.getFirstName(), player.getLastName()));
+
     }
 }
