@@ -35,7 +35,7 @@ public class PlayersController extends BasicServlet {
         if (req.getParameter("firstName") == null
                 && req.getParameter("lastName") == null
                 && req.getParameter("limit") == null
-                && req.getParameter("offset") == null) {
+                && req.getParameter("page") == null) {
             try (EntityManager em = emf.createEntityManager()) {
                 PlayerService playerService = new PlayerService(em);
                 logger.info("/players list all");
@@ -85,21 +85,21 @@ public class PlayersController extends BasicServlet {
                 sendJson(resp, HttpServletResponse.SC_NOT_FOUND, Map.of("message", "Player not found"));
             }
 
-        } else if (req.getParameter("limit") != null && req.getParameter("offset") != null) {
+        } else if (req.getParameter("limit") != null && req.getParameter("page") != null) {
             try (EntityManager em = emf.createEntityManager()) {
                 logger.info("Incoming request: method=GET, uri={}, query={}, remoteIp={}", req.getRequestURI(), req.getQueryString(), req.getRemoteAddr());
                 PositiveNumberValidation positiveNumberValidation = new PositiveNumberValidation();
                 positiveNumberValidation.validate(req.getParameter("limit"));
-                positiveNumberValidation.validate(req.getParameter("offset"));
+                positiveNumberValidation.validate(req.getParameter("page"));
                 Integer limit = Integer.parseInt(req.getParameter("limit"));
-                Integer offset = Integer.parseInt(req.getParameter("offset"));
-                logger.info("/players pagination: limit={}, offset={}", limit, offset);
+                Integer page = Integer.parseInt(req.getParameter("page"));
+                logger.info("/players pagination: limit={}, page={}", limit, page);
                 PlayerService playerService = new PlayerService(em);
-                ResponsePaginationDto<PlayerDto> players = playerService.getPlayersPagination(limit, offset);
+                ResponsePaginationDto<PlayerDto> players = playerService.getPlayersPagination(limit, page);
                 sendJson(resp, HttpServletResponse.SC_OK, players);
             } catch (IllegalArgumentException e) {
-                logger.error("Wrong values on pagination: limit={}, offset={}", req.getParameter("limit"), req.getParameter("offset"));
-                sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of("message", "Invalid limit or offset"));
+                logger.error("Wrong values on pagination: limit={}, page={}", req.getParameter("limit"), req.getParameter("page"));
+                sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of("message", "Invalid limit or page"));
 
             } catch (Exception e) {
                 logger.error("Error fetching players with pagination, cause=", e);

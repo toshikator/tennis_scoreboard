@@ -24,21 +24,21 @@ public class PlayerService extends BasicService {
         this.playerRepository = new PlayerRepository(this.em, Player.class);
     }
 
-    public ResponsePaginationDto<PlayerDto> getPlayersPagination(Integer limit, Integer offset) {
+    public ResponsePaginationDto<PlayerDto> getPlayersPagination(Integer limit, Integer page) {
         Long count = playerRepository.countAll();
-        if (limit == null || offset == null) {
+        if (limit == null || page == null) {
             limit = 1;
-            offset = 0;
+            page = 0;
         }
         if (limit > 50) {
             limit = 50;
         }
-        if (offset < 0) {
-            offset = 0;
+        if (page < 0) {
+            page = 0;
         }
-        List<Player> players = playerRepository.getDataForPagination(offset, limit);
+        List<Player> players = playerRepository.getDataForPagination(page, limit);
         List<PlayerDto> playersDto = players.stream().map(player -> new PlayerDto(player.getId(), player.getFirstName(), player.getLastName())).toList();
-        PaginationDto paginationDto = new PaginationDto(offset, limit, count);
+        PaginationDto paginationDto = new PaginationDto(page, limit, count);
         return new ResponsePaginationDto<PlayerDto>(playersDto, paginationDto);
     }
 

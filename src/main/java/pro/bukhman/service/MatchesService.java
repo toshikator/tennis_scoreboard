@@ -25,21 +25,21 @@ public class MatchesService extends BasicService {
         matchRepository = new MatchRepository(em, Match.class);
     }
 
-    public ResponsePaginationDto<MatchDto> getMatchesPagination(Integer limit, Integer offset) {
+    public ResponsePaginationDto<MatchDto> getMatchesPagination(Integer limit, Integer page) {
         Long count = matchRepository.countAll();
-        if (limit == null || offset == null) {
+        if (limit == null || page == null) {
             limit = 1;
-            offset = 0;
+            page = 0;
         }
         if (limit > 50) {
             limit = 50;
         }
-        if (offset < 0) {
-            offset = 0;
+        if (page < 0) {
+            page = 0;
         }
-        List<Match> matches = matchRepository.getDataForPagination(offset, limit);
+        List<Match> matches = matchRepository.getDataForPagination(page, limit);
         List<MatchDto> matchesDto = matches.stream().map(match -> new MatchDto(match.getPlayer1().getId(), match.getPlayer2().getId(), match.getWinner().getId(), match.getId())).toList();
-        PaginationDto paginationDto = new PaginationDto(offset, limit, count);
+        PaginationDto paginationDto = new PaginationDto(page, limit, count);
         return new ResponsePaginationDto<MatchDto>(matchesDto, paginationDto);
     }
 
