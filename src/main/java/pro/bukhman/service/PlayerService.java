@@ -28,13 +28,13 @@ public class PlayerService extends BasicService {
         Long count = playerRepository.countAll();
         if (limit == null || page == null) {
             limit = 1;
-            page = 0;
+            page = 1;
         }
         if (limit > 50) {
             limit = 50;
         }
-        if (page < 0) {
-            page = 0;
+        if (page <= 0) {
+            page = 1;
         }
         List<Player> players = playerRepository.getDataForPagination(page, limit);
         List<PlayerDto> playersDto = players.stream().map(player -> new PlayerDto(player.getId(), player.getFirstName(), player.getLastName())).toList();

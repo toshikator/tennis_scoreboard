@@ -54,6 +54,7 @@ public class NewMatchController extends BasicServlet {
                         "code", "VALIDATION_ERROR",
                         "errors", errors
                 ));
+                return;
             }
             player1Id = Long.parseLong(req.getParameter("player1Id"));
             player2Id = Long.parseLong(req.getParameter("player2Id"));

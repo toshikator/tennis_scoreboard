@@ -29,13 +29,13 @@ public class MatchesService extends BasicService {
         Long count = matchRepository.countAll();
         if (limit == null || page == null) {
             limit = 1;
-            page = 0;
+            page = 1;
         }
         if (limit > 50) {
             limit = 50;
         }
-        if (page < 0) {
-            page = 0;
+        if (page <= 0) {
+            page = 1;
         }
         List<Match> matches = matchRepository.getDataForPagination(page, limit);
         List<MatchDto> matchesDto = matches.stream().map(match -> new MatchDto(match.getPlayer1().getId(), match.getPlayer2().getId(), match.getWinner().getId(), match.getId())).toList();
