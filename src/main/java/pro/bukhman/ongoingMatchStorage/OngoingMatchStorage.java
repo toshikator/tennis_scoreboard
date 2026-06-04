@@ -40,11 +40,9 @@ public class OngoingMatchStorage {
         OngoingMatchSnapshot s = ongoingMatch.getSnapshot();
         PlayerDto p1 = s.getPlayer1();
         PlayerDto p2 = s.getPlayer2();
-        Long winnerId;
-        try {
+        Long winnerId = -1L;
+        if (ongoingMatch.isFinished()) {
             winnerId = ongoingMatch.getWinner().id();
-        } catch (NullPointerException e) {
-            winnerId = -1L;
         }
         OngoingMatchDto dto = new OngoingMatchDto(id, p1.id(), p2.id(), p1.firstName(), p2.firstName(), p1.lastName(),
                 p2.lastName(), s.getPlayer1Points(), s.getPlayer2Points(), s.getPlayer1Sets(), s.getPlayer2Sets(),
